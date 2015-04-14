@@ -1,0 +1,25 @@
+[general]
+name=IPyConsole
+qgisMinimumVersion=1.8
+qgisMaximumVersion=2.99
+description=IPython QGIS Console
+version=version 0.1
+author=Alessandro Pasotti
+email=apasotti@gmail.com
+
+
+changelog=0.1 first version
+
+tags=console,ipython
+
+tracker=http://bugs.itopen.it/changed
+homepage=http://www.itopen.it/changed
+repository=http://www.itopen.it/changedrepo
+
+experimental=True
+
+about=A QGIS IPython console with batteries included
+
+
+; change icon...
+icon=icons/icon.png
