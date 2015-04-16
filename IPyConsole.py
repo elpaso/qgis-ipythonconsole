@@ -119,7 +119,6 @@ class IPyConsole:
             })
             kernel.shell.ex('propertize(core)')
             kernel.shell.ex('propertize(gui)')
-            #kernel.shell.ex('print (u"You can access to canvas and iface objects and to core and gui Qt modules")')
 
             kernel_client = kernel_manager.client()
             kernel_client.start_channels()
@@ -170,10 +169,25 @@ class IPyConsole:
                 self.dock.setWidget(self.control)
                 self.iface.addDockWidget(Qt.BottomDockWidgetArea, self.dock)
 
-            kernel_client.execute('print (u"You can access to \'canvas\', \'iface\', \'app\' (QGIS application) objects and to \'core\' and \'gui\' QGIS modules. All returning-something and no-args \'core.Qgs*\' and \'gui.Qgs*\' class members have a \'p_*\' equivalent property to ease class introspection. Enjoy!")')
+            #import pdb; pyqtRemoveInputHook(); pdb.set_trace()
+            def shout():
+                from IPython.core.usage import default_gui_banner
+                self.control._control.clear()
+                self.control._reading = False
+                self.control._highlighter.highlighting_on = False
+                self.control._append_before_prompt_pos = self.control._get_cursor().position()
+                self.control._append_html('<small>%s</small>' % default_gui_banner.replace('\n', '<br>').strip())
+                self.control._append_html( QCoreApplication.translate("IPyConsole", """<br><h3>Welcome to QGIS <a href="https://ipython.org/">IPython</a> Console</h3>
+                You have access to <code>canvas</code>, <code>iface</code>, <code>app</code> (QGIS application) objects and to <code>core</code> and <code>gui</code> QGIS modules. All returning-something and no-args <code>core.Qgs*</code> and <code>gui.Qgs*</code> class members have a <code>p_*</code> equivalent property to ease class introspection with <strong>TAB</strong> completion.<br>
+                <em>Enjoy IPyConsole!</em><br><small> Another hack by <a href="http://www.itopen.it">ItOpen</a></small><br>
+                """))
+
+            QTimer.singleShot(0, shout)
+
+
 
         except ImportError:
-            QMessageBox.information(self.iface.mainWindow(),  QCoreApplication.translate("IPyConsole", u'Error'), QCoreApplication.translate("IPyConsole", u'You need to install <b>IPython</b> before running this plugin.<br>IPython can be installedwith <code>pip install IPython</code>'))
+            QMessageBox.information(self.iface.mainWindow(),  QCoreApplication.translate("IPyConsole", u'Error'), QCoreApplication.translate("IPyConsole", u'You need to install <b>IPython</b> (and then restart QGIS) before running this plugin.<br>IPython can be installed with <code>pip install IPython</code>.'))
 
 
 if __name__ == "__main__":
