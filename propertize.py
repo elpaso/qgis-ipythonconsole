@@ -26,8 +26,6 @@ __author__ = 'Alessandro Pasotti'
 __date__ = 'April 2015'
 __copyright__ = '(C) 2015, Alessandro Pasotti'
 
-"""Transform all methods without arguments and that do return something into
-properties for the given input class or module"""
 
 import inspect
 
