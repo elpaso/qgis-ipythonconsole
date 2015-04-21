@@ -1,14 +1,16 @@
 [general]
 name=IPyConsole
-qgisMinimumVersion=1.8
+qgisMinimumVersion=2.0
 qgisMaximumVersion=2.99
 description=IPython QGIS Console
-version=version 0.3
+version=version 0.4
 author=Alessandro Pasotti
 email=apasotti@gmail.com
 
 
 changelog=
+    0.4 added configuration options for font size and default mode (window/dock)
+        added about dialog and links
     0.3 fixed double prompt at start
     0.2 better messages and usage instructions
     0.1 first version
@@ -16,7 +18,7 @@ changelog=
 tags=console,ipython
 
 tracker=https://github.com/elpaso/qgis-ipythonconsole/issues
-homepage=https://github.com/elpaso/qgis-ipythonconsole
+homepage=http://www.itopen.it/qgis-and-ipython-the-definitive-interactive-console/
 repository=https://github.com/elpaso/qgis-ipythonconsole
 
 experimental=True

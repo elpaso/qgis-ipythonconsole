@@ -27,41 +27,68 @@ import os
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from PyQt4.uic import loadUi
+
 from qgis.core import *
 
 from propertize import propertize
-import resources
+import resources_rc
+
+PLUGIN_DOMAIN="IPyConsole"
+DEFAULT_WINDOW_MODE='windowed'
+DEFAULT_FONT_SIZE=10
+
+DEBUG=False
+
+if not DEBUG:
+    from SettingsDialog import SettingsDialog
+else:
+    from PyQt4 import uic
+    import os
+    class SettingsDialog(QDialog):
+        def __init__(self):
+            super(SettingsDialog, self ).__init__()
+            uic.loadUi(os.path.join(os.path.dirname(__file__), 'Ui_SettingsDialog.ui'), self)
+            QMetaObject.connectSlotsByName(self)
+
+def _tr(s):
+    """Translate, save some typing"""
+    return QCoreApplication.translate(PLUGIN_DOMAIN, s)
+
 
 class IPyConsole:
-
-    # Store status
-    status = None
 
     def __init__(self, iface):
         # Save reference to the QGIS interface
         self.iface = iface
         self.canvas = iface.mapCanvas()
+        self.status = None
+        self.settingsDlg = None
+        self.settings =  QSettings('ItOpen', PLUGIN_DOMAIN)
 
     def initGui(self):
         # Create action that will start plugin
         self.action = QAction(QIcon(":/plugins/IPyConsole/icons/icon.png"), \
-            QCoreApplication.translate("IPyConsole", "&IPython QGIS Console"), self.iface.mainWindow())
+            _tr("&IPython QGIS Console"), self.iface.mainWindow())
         self.docked_action = QAction(QIcon(":/plugins/IPyConsole/icons/icon.png"), \
-            QCoreApplication.translate("IPyConsole", "&Docked"), self.iface.mainWindow())
+            _tr("&Docked"), self.iface.mainWindow())
         self.windowed_action = QAction(QIcon(":/plugins/IPyConsole/icons/icon.png"), \
-            QCoreApplication.translate("IPyConsole", "&Windowed"), self.iface.mainWindow())
+            _tr("&Windowed"), self.iface.mainWindow())
+        self.settings_action = QAction(QIcon(":/plugins/IPyConsole/icons/settings.svg"), \
+            _tr("&Settings"), self.iface.mainWindow())
         # connect the action to the run method
         QObject.connect(self.docked_action, SIGNAL("activated()"), self.docked)
         QObject.connect(self.windowed_action, SIGNAL("activated()"), self.windowed)
         QObject.connect(self.action, SIGNAL("activated()"), self.default)
+        QObject.connect(self.settings_action, SIGNAL("activated()"), self.show_settings)
 
         # Add toolbar button
         self.iface.addToolBarIcon(self.action)
 
         # Build menu
-        self.menu = QMenu(QCoreApplication.translate("IPyConsole", "&IPython QGIS Console"))
+        self.menu = QMenu(_tr("&IPython QGIS Console"))
         self.menu.setIcon(QIcon(":/plugins/IPyConsole/icons/icon.png"))
-        self.menu.addActions([self.docked_action, self.windowed_action])
+        self.menu.addActions([self.docked_action, self.windowed_action, self.settings_action])
         self.iface.pluginMenu().addMenu( self.menu )
 
 
@@ -69,18 +96,71 @@ class IPyConsole:
         # Remove the plugin menu item and icon
         self.iface.removePluginMenu("IPyConsole", self.docked_action)
         self.iface.removePluginMenu("IPyConsole", self.windowed_action)
+        self.iface.removePluginMenu("IPyConsole", self.settings_action)
         self.iface.removeToolBarIcon(self.action)
 
 
     def default(self):
-        """TODO: read config setting for default window type"""
-        self.run(dock=False)
+        """TODO: read settings setting for default window type"""
+        self.run(dock=(self.get_settings('default_window_mode', DEFAULT_WINDOW_MODE) == 'docked'))
 
     def windowed(self):
         self.run(dock=False)
 
     def docked(self):
         self.run(dock=True)
+
+    def show_settings(self):
+        if self.settingsDlg is None:
+            self.read_settings()
+            self.settingsDlg = SettingsDialog()
+            # Set values
+            winmode = self.get_settings('default_window_mode', DEFAULT_WINDOW_MODE)
+            if winmode == 'docked':
+                self.settingsDlg.windowModeDocked.setChecked(True)
+            else:
+                self.settingsDlg.windowModeFloating.setChecked(True)
+            font_size =  self.get_settings('font_size', DEFAULT_FONT_SIZE)
+            self.settingsDlg.fontSize.setValue(int(font_size))
+
+        self.settingsDlg.show()
+        result = self.settingsDlg.exec_()
+        if result:
+            #import pdb; pyqtRemoveInputHook(); pdb.set_trace()
+            self.set_settings('font_size', self.settingsDlg.fontSize.value())
+            winmode = 'windowed'
+            if self.settingsDlg.windowModeFloating.isChecked():
+                winmode = DEFAULT_WINDOW_MODE
+            elif self.settingsDlg.windowModeDocked.isChecked():
+                winmode = 'docked'
+            self.set_settings('default_window_mode', winmode)
+            self.store_settings()
+
+
+    # return a settings parameter
+    def get_settings(self, key, default=''):
+        return self.settings.value(key, default);
+
+
+   # set a settings parameter
+    def set_settings(self, key, value):
+        return self.settings.setValue(key, value);
+
+    #read settings from file
+    def read_settings(self):
+        if not self.settings.isWritable():
+            infoString = unicode(_tr( "<strong>IPyConsole plugin</strong> cannot read settings file (%s).<br>Please check your settings and file permissions.")) %  unicode(self.settings.fileName())
+            QMessageBox.information(self.iface.mainWindow(), _tr("IPyConsole settings"), infoString)
+
+
+    # save to a file the settings array
+    def store_settings(self):
+        if not self.settings.isWritable():
+            infoString = unicode(_tr( "<strong>IPyConsole plugin</strong> cannot write settings file (%s).<br>Please check your settings and file permissions.")) %  unicode(self.settings.fileName())
+            QMessageBox.information(self.iface.mainWindow(), _tr("IPyConsole settings") ,infoString)
+            return
+        self.settings.sync ()
+        qDebug('IPyConsole settings written on ' + self.settings.fileName())
 
     # run
     def run(self, dock=False):
@@ -119,6 +199,12 @@ class IPyConsole:
             })
             kernel.shell.ex('propertize(core)')
             kernel.shell.ex('propertize(gui)')
+            # Import in the current namespace
+            kernel.shell.ex('from PyQt4.QtCore import *')
+            kernel.shell.ex('from PyQt4.QtGui import *')
+            kernel.shell.ex('from qgis.core import *')
+            kernel.shell.ex('from qgis.gui import *')
+
 
             kernel_client = kernel_manager.client()
             kernel_client.start_channels()
@@ -132,7 +218,8 @@ class IPyConsole:
                 self.control = None
                 self.dock = None
 
-            class myWidget(IPythonWidget):
+            # or RichIPythonWidget
+            class myWidget(RichIPythonWidget):
                 def closeEvent(self, event):
                     stop()
                     event.accept()
@@ -142,19 +229,20 @@ class IPyConsole:
                     stop()
                     event.accept()
 
-            #control = RichIPythonWidget()
-            # Poor version
             # IPythonWidget.gui_completion : ‘plain’|’droplist’|’ncurses’
             # IPythonWidget.height : Integer
             # IPythonWidget.width : Integer
-            # TODO: configurable
+            # TODO: settingsurable
             myWidget.gui_completion = 'plain'
             myWidget.paging = 'none'
             self.control = myWidget()
 
             # Font size regulation
-            # TODO: configurable
+            # TODO: settingurable
             #self.control.change_font_size(-1)
+            font = self.control.font
+            font.setPointSize(int(self.get_settings('font_size', DEFAULT_FONT_SIZE)))
+            self.control._set_font(font)
             self.control.kernel_manager = kernel_manager
             self.control.kernel_client = kernel_client
             self.control.exit_requested.connect(stop)
@@ -177,9 +265,9 @@ class IPyConsole:
                 self.control._highlighter.highlighting_on = False
                 self.control._append_before_prompt_pos = self.control._get_cursor().position()
                 self.control._append_html('<small>%s</small>' % default_gui_banner.replace('\n', '<br>').strip())
-                self.control._append_html( QCoreApplication.translate("IPyConsole", """<br><h3>Welcome to QGIS <a href="https://ipython.org/">IPython</a> Console</h3>
-                You have access to <code>canvas</code>, <code>iface</code>, <code>app</code> (QGIS application) objects and to <code>core</code> and <code>gui</code> QGIS modules. All returning-something and no-args <code>core.Qgs*</code> and <code>gui.Qgs*</code> class members have a <code>p_*</code> equivalent property to ease class introspection with <strong>TAB</strong> completion.<br>
-                <em>Enjoy IPyConsole!</em><br><small> Another hack by <a href="http://www.itopen.it">ItOpen</a></small><br>
+                self.control._append_html( _tr("""<br><h3>Welcome to QGIS <a href="https://ipython.org/">IPython</a> Console</h3>
+                You have access to <code>canvas</code>, <code>iface</code>, <code>app</code> (QGIS application) objects and to all <code>qgis</code> and <code>PyQt4</code> <code>core</code> and <code>gui</code> modules directly from the shell. All returning-something and no-args <code>core</code> and <code>gui</code> <code>Qgs*</code> class members have a <code>p_*</code> equivalent property to ease class introspection with <strong>TAB</strong> completion. Don't forget that you have access to all your underlying shell commands too!<br>
+                <em>Enjoy IPyConsole! Another hack by <a href="http://www.itopen.it">ItOpen</a></em></br>
                 """))
 
             QTimer.singleShot(0, shout)
@@ -187,7 +275,7 @@ class IPyConsole:
 
 
         except ImportError:
-            QMessageBox.information(self.iface.mainWindow(),  QCoreApplication.translate("IPyConsole", u'Error'), QCoreApplication.translate("IPyConsole", u'You need to install <b>IPython</b> (and then restart QGIS) before running this plugin.<br>IPython can be installed with <code>pip install IPython</code>.'))
+            QMessageBox.information(self.iface.mainWindow(), _tr(u'Error'), _tr(u'You need to install <b>IPython</b> (and then restart QGIS) before running this <b>IPyConsole</b> plugin.<br>IPython can be installed with <code>pip install IPython</code>. More informations about IPython installation on <a href="https://ipython.org/install.html">https://ipython.org/install.html</a>'))
 
 
 if __name__ == "__main__":

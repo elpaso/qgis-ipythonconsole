@@ -7,13 +7,13 @@ dist: package
 install: copy2qgis
 
 PY_FILES = IPyConsole.py __init__.py
-EXTRAS = icon.png
-#UI_FILES = Ui_IPyConsole.py
-                                                                                                                                                                                                                                                                                                                                                                                                               RESOURCE_FILES = resources.py
+EXTRAS = icon.png settings.svg
+UI_FILES = Ui_SettingsDialog.py
+                                                                                                                                                                                                                                                                                                                                                                                                               RESOURCE_FILES = resources_rc.py
 
 compile: $(UI_FILES) $(RESOURCE_FILES)
 
-%.py : %.qrc
+%_rc.py : %.qrc
 	pyrcc4 -o $@  $<
 
 %.py : %.ui
@@ -24,10 +24,10 @@ compile: $(UI_FILES) $(RESOURCE_FILES)
 clean:
 	find ./ -name "*.pyc" -exec rm -rf \{\} \;
 	rm -f ../IPyConsole.zip
-	rm -f Ui_IPyConsole.py resources.py
+	rm -f Ui_IPyConsole.py resources_rc.py
 
 package:
-	cd .. && find IPyConsole/  -print|grep -v Make | grep -v zip | grep -v .git | zip IPyConsole.zip -@
+	cd .. && find IPyConsole/  -print|grep -v Make | grep -v .pyc | grep -v zip | grep -v .git | zip IPyConsole.zip -@
 
 localrepo:
 	cp ../IPyConsole.zip ~/public_html/qgis/IPyConsole.zip
