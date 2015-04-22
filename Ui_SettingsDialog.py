@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'Ui_Settings.ui'
+# Form implementation generated from reading ui file 'Ui_SettingsDialog.ui'
 #
-# Created: Tue Apr 21 12:47:10 2015
+# Created: Wed Apr 22 10:29:38 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -110,7 +110,7 @@ class Ui_SettingsDialog(object):
         self.windowModeDocked.setText(_translate("SettingsDialog", "docked", None))
         self.label_2.setText(_translate("SettingsDialog", "Console font size", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("SettingsDialog", "Settings", None))
-        self.label.setText(_translate("SettingsDialog", "<html><head/><body><p><span style=\" font-size:xx-large; font-weight:600;\">IPython QGIS Console </span></p><p>An IPython interactive console with batteries included. </p><p><a href=\"http://www.itopen.it\"><span style=\" text-decoration: underline; color:#0057ae;\">IPyConsole home page</span></a></p><p><a href=\"http://www.ipython.org\"><span style=\" text-decoration: underline; color:#0057ae;\">IPython project page</span></a> (feed-back is highly appreciated!)</p><p><a href=\"https://github.com/elpaso/qgis-ipythonconsole\"><span style=\" text-decoration: underline; color:#0057ae;\">Plugin source code and bug tracker</span></a></p><p>Do you like IPyConsole? Make a <a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=XEXYSQAQQYZGS\"><span style=\" text-decoration: underline; color:#0057ae;\">small donation</span></a> to keep this project alive! <a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=XEXYSQAQQYZGS\"><img src=\":/plugins/IPyConsole/icons/paypal.png\"/></a></p></body></html>", None))
+        self.label.setText(_translate("SettingsDialog", "<html><head/><body><p><span style=\" font-size:xx-large; font-weight:600;\">IPython QGIS Console </span></p><p>An IPython interactive console with batteries included. </p><p><a href=\"http://www.itopen.it\"><span style=\" text-decoration: underline; color:#0057ae;\">IPyConsole home page</span></a>  (feed-back is highly appreciated!)</p><p><a href=\"http://www.ipython.org\"><span style=\" text-decoration: underline; color:#0057ae;\">IPython project page</span></a></p><p><a href=\"https://github.com/elpaso/qgis-ipythonconsole\"><span style=\" text-decoration: underline; color:#0057ae;\">Plugin source code and bug tracker</span></a></p><p>Do you like IPyConsole? Make a <a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=XEXYSQAQQYZGS\"><span style=\" text-decoration: underline; color:#0057ae;\">small donation</span></a> to keep this project alive! <a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=XEXYSQAQQYZGS\"><img src=\":/plugins/IPyConsole/icons/paypal.png\"/></a></p></body></html>", None))
         self.label_3.setText(_translate("SettingsDialog", "<html><head/><body><p><img src=\":/plugins/IPyConsole/icons/icon.png\"/></p></body></html>", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("SettingsDialog", "About", None))
 

@@ -219,7 +219,7 @@ class IPyConsole:
                 self.dock = None
 
             # or RichIPythonWidget
-            class myWidget(RichIPythonWidget):
+            class myWidget(IPythonWidget):
                 def closeEvent(self, event):
                     stop()
                     event.accept()

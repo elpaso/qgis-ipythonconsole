@@ -3,12 +3,13 @@ name=IPyConsole
 qgisMinimumVersion=2.0
 qgisMaximumVersion=2.99
 description=IPython QGIS Console
-version=version 0.4
+version=version 0.5
 author=Alessandro Pasotti
 email=apasotti@gmail.com
 
 
 changelog=
+    0.5 fixed propertize on classmethods
     0.4 added configuration options for font size and default mode (window/dock)
         added about dialog and links
     0.3 fixed double prompt at start
