@@ -141,20 +141,21 @@ if __name__ == '__main__':
             self.assertEqual(self.duck.p_whoami, 'Duck')
 
 
+    # Now testing QGIS bindings: this is the hard part!
     from qgis import core
     class TestQGIS(unittest.TestCase):
 
         def setUp(self):
             propertize(core)
 
+        def test_singleton(self):
+            self.assertEqual(core.QgsMapLayerRegistry.instance(), core.QgsMapLayerRegistry.p_instance)
+
         def test_instance(self):
             self.assertEqual(core.QgsMapLayerRegistry.instance().mapLayers(), {})
             self.assertEqual(core.QgsMapLayerRegistry.instance().p_mapLayers, core.QgsMapLayerRegistry.instance().mapLayers())
             self.assertEqual(core.QgsMapLayerRegistry.p_instance.mapLayers(), {})
-            self.assertEqual(core.QgsMapLayerRegistry.p_instance, core.QgsMapLayerRegistry.instance())
 
-        def test_singleton(self):
-            self.assertEqual(core.QgsMapLayerRegistry.instance(), core.QgsMapLayerRegistry.p_instance)
 
     #from IPython import embed; embed()
 
