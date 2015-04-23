@@ -31,11 +31,10 @@ __copyright__ = '(C) 2015, Alessandro Pasotti'
 
 import inspect
 import functools
-
 def propertize(cls, prefix='p_', quiet=True):
     """Transform all methods without arguments and that do return something into
     properties for the given input class or module, an optional prefix
-    (defaults to _p) is added to the property so that the original function is
+    (defaults to p_) is added to the property so that the original function is
     still available"""
 
     def _cls_propertize(cls, prefix, quiet):
@@ -149,12 +148,14 @@ if __name__ == '__main__':
             propertize(core)
 
         def test_singleton(self):
-            self.assertEqual(core.QgsMapLayerRegistry.instance(), core.QgsMapLayerRegistry.p_instance)
+            a = core.QgsMapLayerRegistry.p_instance
+            b = core.QgsMapLayerRegistry.instance()
+            self.assertEqual(a,b)
+            #self.assertEqual(core.QgsMapLayerRegistry.instance(), core.QgsMapLayerRegistry.p_instance)
 
         def test_instance(self):
             self.assertEqual(core.QgsMapLayerRegistry.instance().mapLayers(), {})
             self.assertEqual(core.QgsMapLayerRegistry.instance().p_mapLayers, core.QgsMapLayerRegistry.instance().mapLayers())
-            self.assertEqual(core.QgsMapLayerRegistry.p_instance.mapLayers(), {})
 
 
     #from IPython import embed; embed()

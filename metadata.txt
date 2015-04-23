@@ -9,7 +9,7 @@ email=apasotti@gmail.com
 
 
 changelog=
-    0.5 fixed propertize on classmethods
+    0.5 fixed propertize on classmethods, added option to disable
     0.4 added configuration options for font size and default mode (window/dock)
         added about dialog and links
     0.3 fixed double prompt at start
