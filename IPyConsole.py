@@ -35,10 +35,14 @@ from propertize import propertize
 import resources_rc
 
 PLUGIN_DOMAIN="IPyConsole"
+
+# Defaults for settings
 DEFAULT_WINDOW_MODE='windowed'
 DEFAULT_FONT_SIZE=10
 DEFAULT_PROPERTIZE=1
+DEFAULT_AUTO_OPEN=0
 
+# Loads GUI from .ui
 DEBUG=False
 
 if not DEBUG:
@@ -66,10 +70,17 @@ class IPyConsole:
         self.status = None
         self.settingsDlg = None
         self.settings =  QSettings('ItOpen', PLUGIN_DOMAIN)
+        # If auto_open: connect
+        if int(self.get_settings('auto_open', DEFAULT_AUTO_OPEN)):
+            if self.get_settings('default_window_mode', DEFAULT_WINDOW_MODE) == 'windowed':
+                self.iface.mapCanvas().renderStarting.connect(self.default)
+            else:
+                self.default()
+
 
     def initGui(self):
         # Create action that will start plugin
-        self.action = QAction(QIcon(":/plugins/IPyConsole/icons/icon.png"), \
+        self.default_action = QAction(QIcon(":/plugins/IPyConsole/icons/icon.png"), \
             _tr("&IPython QGIS Console"), self.iface.mainWindow())
         self.docked_action = QAction(QIcon(":/plugins/IPyConsole/icons/icon.png"), \
             _tr("&Docked"), self.iface.mainWindow())
@@ -77,14 +88,15 @@ class IPyConsole:
             _tr("&Windowed"), self.iface.mainWindow())
         self.settings_action = QAction(QIcon(":/plugins/IPyConsole/icons/settings.svg"), \
             _tr("&Settings"), self.iface.mainWindow())
-        # connect the action to the run method
-        QObject.connect(self.docked_action, SIGNAL("activated()"), self.docked)
-        QObject.connect(self.windowed_action, SIGNAL("activated()"), self.windowed)
-        QObject.connect(self.action, SIGNAL("activated()"), self.default)
-        QObject.connect(self.settings_action, SIGNAL("activated()"), self.show_settings)
+
+        # connect the actions to the methods
+        self.docked_action.activated.connect(self.docked)
+        self.windowed_action.activated.connect(self.windowed)
+        self.default_action.activated.connect(self.default)
+        self.settings_action.activated.connect(self.show_settings)
 
         # Add toolbar button
-        self.iface.addToolBarIcon(self.action)
+        self.iface.addToolBarIcon(self.default_action)
 
         # Build menu
         self.menu = QMenu(_tr("&IPython QGIS Console"))
@@ -98,11 +110,17 @@ class IPyConsole:
         self.iface.removePluginMenu("IPyConsole", self.docked_action)
         self.iface.removePluginMenu("IPyConsole", self.windowed_action)
         self.iface.removePluginMenu("IPyConsole", self.settings_action)
-        self.iface.removeToolBarIcon(self.action)
+        self.iface.removeToolBarIcon(self.default_action)
 
 
     def default(self):
         """TODO: read settings setting for default window type"""
+        try:
+            # Disconnect the signal if it was connected to allow
+            # auto_open
+            self.iface.mapCanvas().renderStarting.disconnect(self.default)
+        except TypeError:
+            pass
         self.run(dock=(self.get_settings('default_window_mode', DEFAULT_WINDOW_MODE) == 'docked'))
 
     def windowed(self):
@@ -125,6 +143,8 @@ class IPyConsole:
             self.settingsDlg.fontSize.setValue(int(font_size))
             propertize_setting = self.get_settings('propertize', DEFAULT_PROPERTIZE)
             self.settingsDlg.propertize.setChecked(int(propertize_setting))
+            auto_open = self.get_settings('auto_open', DEFAULT_AUTO_OPEN)
+            self.settingsDlg.auto_open.setChecked(int(auto_open))
 
         self.settingsDlg.show()
         result = self.settingsDlg.exec_()
@@ -138,6 +158,7 @@ class IPyConsole:
                 winmode = 'docked'
             self.set_settings('default_window_mode', winmode)
             self.set_settings('propertize', int(self.settingsDlg.propertize.isChecked()))
+            self.set_settings('auto_open', int(self.settingsDlg.auto_open.isChecked()))
             self.store_settings()
 
 
@@ -223,21 +244,35 @@ class IPyConsole:
                 self.control = None
                 self.dock = None
 
-            # or RichIPythonWidget
+             # or RichIPythonWidget
             class myWidget(IPythonWidget):
                 def closeEvent(self, event):
                     stop()
                     event.accept()
+
+                def resizeEvent(self, event):
+                    super(myWidget, self).resizeEvent(event)
+                    self.console_resize()
+                    event.accept()
+
+                def get_columns(self):
+                    font_width = QFontMetrics(self.font).width(' ')
+                    return self.size().width() / font_width
+
+                def console_resize(self):
+                    self.width = self.get_columns()
 
             class myDock(QDockWidget):
                 def closeEvent(self, event):
                     stop()
                     event.accept()
 
+
             # IPythonWidget.gui_completion : ‘plain’|’droplist’|’ncurses’
             # IPythonWidget.height : Integer
             # IPythonWidget.width : Integer
             # TODO: settingsurable
+            # myWidget.width = 160
             myWidget.gui_completion = 'plain'
             myWidget.paging = 'none'
             self.control = myWidget()
@@ -279,6 +314,18 @@ class IPyConsole:
                 <em>Enjoy IPyConsole! Another hack by <a href="http://www.itopen.it">ItOpen</a></em></br>
                 """) % propertize_text)
 
+            def monkey_patch_columnize(control):
+                """As the name suggests... dynamic column number: stock
+                qtconsole doesn't resize its column number on window
+                resize but sticks to 80"""
+                from IPython.qt.console.completion_plain import text
+                old_columnize = text.columnize
+                def new_columnize(items, separator='  ', displaywidth=80):
+                    displaywidth = control.get_columns()
+                    return old_columnize(items, separator, displaywidth)
+                text.columnize = new_columnize
+
+            monkey_patch_columnize(self.control)
             QTimer.singleShot(0, shout)
 
         except ImportError:

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'Ui_SettingsDialog.ui'
 #
-# Created: Thu Apr 23 09:49:03 2015
+# Created: Fri Apr 24 15:55:59 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -70,7 +70,10 @@ class Ui_SettingsDialog(object):
         self.gridLayout.addWidget(self.label_2, 0, 0, 1, 1)
         self.gridLayout_3.addLayout(self.gridLayout, 0, 0, 1, 1)
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout_3.addItem(spacerItem, 1, 0, 1, 1)
+        self.gridLayout_3.addItem(spacerItem, 2, 0, 1, 1)
+        self.auto_open = QtGui.QCheckBox(self.tab)
+        self.auto_open.setObjectName(_fromUtf8("auto_open"))
+        self.gridLayout_3.addWidget(self.auto_open, 1, 0, 1, 1)
         self.tabWidget.addTab(self.tab, _fromUtf8(""))
         self.tab_3 = QtGui.QWidget()
         self.tab_3.setObjectName(_fromUtf8("tab_3"))
@@ -123,7 +126,8 @@ class Ui_SettingsDialog(object):
         self.windowModeFloating.setText(_translate("SettingsDialog", "floating", None))
         self.windowModeDocked.setText(_translate("SettingsDialog", "docked", None))
         self.label_2.setText(_translate("SettingsDialog", "Console font size", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("SettingsDialog", "Appearance", None))
+        self.auto_open.setText(_translate("SettingsDialog", "Launch automatically when QGIS starts", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("SettingsDialog", "General", None))
         self.label_4.setText(_translate("SettingsDialog", "<h3>Python code configuration</h3>\n"
 "<p><code>propertize</code> adds <code>p_</code> prefixed alias properties for all (0-arguments and returning-something) functions in <code>Qgs*</code> classes from <code>qgis.core</code> and  <code>qgis.gui</code> modules.</p>\n"
 "<p>This is extremely useful when working with IPython\'s amazing <b>TAB</b> completion feature.</b>\n"
@@ -134,9 +138,10 @@ class Ui_SettingsDialog(object):
 "layer.p_crs.p_authid\n"
 "</pre>\n"
 "</p>", None))
-        self.propertize.setText(_translate("SettingsDialog", "Propertize", None))
+        self.propertize.setText(_translate("SettingsDialog", "Enable propertize", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("SettingsDialog", "Python", None))
-        self.label.setText(_translate("SettingsDialog", "<html><head/><body><p><span style=\" font-size:xx-large; font-weight:600;\">IPython QGIS Console </span></p><p>An IPython interactive console with batteries included. </p><p><a href=\"http://www.itopen.it\"><span style=\" text-decoration: underline; color:#0057ae;\">IPyConsole home page</span></a>  (feed-back is highly appreciated!)</p><p><a href=\"http://www.ipython.org\"><span style=\" text-decoration: underline; color:#0057ae;\">IPython project page</span></a></p><p><a href=\"https://github.com/elpaso/qgis-ipythonconsole\"><span style=\" text-decoration: underline; color:#0057ae;\">Plugin source code and bug tracker</span></a></p><p>Do you like IPyConsole? Make a <a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=XEXYSQAQQYZGS\"><span style=\" text-decoration: underline; color:#0057ae;\">small donation</span></a> to keep this project alive! <a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=XEXYSQAQQYZGS\"><img src=\":/plugins/IPyConsole/icons/paypal.png\"/></a></p></body></html>", None))
+        self.label.setText(_translate("SettingsDialog", "<html><head/><body><p><span style=\" font-size:xx-large; font-weight:600;\">IPython QGIS Console </span></p><p>An IPython interactive console with batteries included. </p><p><a href=\"http://www.itopen.it/qgis-and-ipython-the-definitive-interactive-console/\"><span style=\" text-decoration: underline; color:#0057ae;\">Plugin Home Page</span></a>  (feed-back is highly appreciated!)</p><p><a href=\"http://www.ipython.org\"><span style=\" text-decoration: underline; color:#0057ae;\">IPython Home Page</span></a></p><p><a href=\"https://github.com/elpaso/qgis-ipythonconsole\"><span style=\" text-decoration: underline; color:#0057ae;\">Source Code and Bug Tracker</span></a></p><p><b>Do you like IPyConsole? Make a <a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=XEXYSQAQQYZGS\"><span style=\" text-decoration: underline; color:#0057ae;\">small donation</span></a> to keep this project alive! <a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=XEXYSQAQQYZGS\"><img src=\":/plugins/IPyConsole/icons/paypal.png\"/></a></b></p>\n"
+"<p><i>Enjoy IPyConsole!<br>Made in Italy by<a href=\"http://www.itopen.it\"><span style=\" text-decoration: underline; color:#0057ae;\"> Alessandro Pasotti (ItOpen)</a></i></p> </body></html>", None))
         self.label_3.setText(_translate("SettingsDialog", "<html><head/><body><p><img src=\":/plugins/IPyConsole/icons/icon.png\"/></p></body></html>", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("SettingsDialog", "About", None))
 

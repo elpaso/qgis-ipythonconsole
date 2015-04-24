@@ -3,12 +3,13 @@ name=IPyConsole
 qgisMinimumVersion=2.0
 qgisMaximumVersion=2.99
 description=IPython QGIS Console
-version=version 0.5
+version=version 0.6
 author=Alessandro Pasotti
 email=apasotti@gmail.com
 
 
 changelog=
+    0.6 added option to launch at start, monkey patched IPython console resize
     0.5 fixed propertize on classmethods, added option to disable
     0.4 added configuration options for font size and default mode (window/dock)
         added about dialog and links

@@ -32,7 +32,7 @@
          <string/>
         </property>
         <attribute name="title">
-         <string>Appearance</string>
+         <string>General</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_3">
          <item row="0" column="0">
@@ -86,7 +86,7 @@
            </item>
           </layout>
          </item>
-         <item row="1" column="0">
+         <item row="2" column="0">
           <spacer name="verticalSpacer">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -98,6 +98,13 @@
             </size>
            </property>
           </spacer>
+         </item>
+         <item row="1" column="0">
+          <widget class="QCheckBox" name="auto_open">
+           <property name="text">
+            <string>Launch automatically when QGIS starts</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -135,7 +142,7 @@ layer.p_crs.p_authid
          <item row="1" column="0">
           <widget class="QCheckBox" name="propertize">
            <property name="text">
-            <string>Propertize</string>
+            <string>Enable propertize</string>
            </property>
           </widget>
          </item>
@@ -149,7 +156,8 @@ layer.p_crs.p_authid
          <item row="0" column="0">
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:xx-large; font-weight:600;&quot;&gt;IPython QGIS Console &lt;/span&gt;&lt;/p&gt;&lt;p&gt;An IPython interactive console with batteries included. &lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://www.itopen.it&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;IPyConsole home page&lt;/span&gt;&lt;/a&gt;  (feed-back is highly appreciated!)&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://www.ipython.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;IPython project page&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/elpaso/qgis-ipythonconsole&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;Plugin source code and bug tracker&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Do you like IPyConsole? Make a &lt;a href=&quot;https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;amp;hosted_button_id=XEXYSQAQQYZGS&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;small donation&lt;/span&gt;&lt;/a&gt; to keep this project alive! &lt;a href=&quot;https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;amp;hosted_button_id=XEXYSQAQQYZGS&quot;&gt;&lt;img src=&quot;:/plugins/IPyConsole/icons/paypal.png&quot;/&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:xx-large; font-weight:600;&quot;&gt;IPython QGIS Console &lt;/span&gt;&lt;/p&gt;&lt;p&gt;An IPython interactive console with batteries included. &lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://www.itopen.it/qgis-and-ipython-the-definitive-interactive-console/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;Plugin Home Page&lt;/span&gt;&lt;/a&gt;  (feed-back is highly appreciated!)&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://www.ipython.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;IPython Home Page&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/elpaso/qgis-ipythonconsole&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;Source Code and Bug Tracker&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;b&gt;Do you like IPyConsole? Make a &lt;a href=&quot;https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;amp;hosted_button_id=XEXYSQAQQYZGS&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;small donation&lt;/span&gt;&lt;/a&gt; to keep this project alive! &lt;a href=&quot;https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;amp;hosted_button_id=XEXYSQAQQYZGS&quot;&gt;&lt;img src=&quot;:/plugins/IPyConsole/icons/paypal.png&quot;/&gt;&lt;/a&gt;&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Enjoy IPyConsole!&lt;br&gt;Made in Italy by&lt;a href=&quot;http://www.itopen.it&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt; Alessandro Pasotti (ItOpen)&lt;/a&gt;&lt;/i&gt;&lt;/p&gt; &lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
