@@ -41,6 +41,7 @@ DEFAULT_WINDOW_MODE='windowed'
 DEFAULT_FONT_SIZE=10
 DEFAULT_PROPERTIZE=1
 DEFAULT_AUTO_OPEN=0
+DEFAULT_SHOW_HELP=1
 
 # Loads GUI from .ui
 DEBUG=False
@@ -145,8 +146,11 @@ class IPyConsole:
             self.settingsDlg.propertize.setChecked(int(propertize_setting))
             auto_open = self.get_settings('auto_open', DEFAULT_AUTO_OPEN)
             self.settingsDlg.auto_open.setChecked(int(auto_open))
+            show_help = self.get_settings('show_help', DEFAULT_SHOW_HELP)
+            self.settingsDlg.show_help.setChecked(int(show_help))
 
         self.settingsDlg.show()
+        self.settingsDlg.adjustSize()
         result = self.settingsDlg.exec_()
         if result:
             #import pdb; pyqtRemoveInputHook(); pdb.set_trace()
@@ -159,6 +163,7 @@ class IPyConsole:
             self.set_settings('default_window_mode', winmode)
             self.set_settings('propertize', int(self.settingsDlg.propertize.isChecked()))
             self.set_settings('auto_open', int(self.settingsDlg.auto_open.isChecked()))
+            self.set_settings('show_help', int(self.settingsDlg.show_help.isChecked()))
             self.store_settings()
 
 
@@ -304,15 +309,16 @@ class IPyConsole:
                 self.control._reading = False
                 self.control._highlighter.highlighting_on = False
                 self.control._append_before_prompt_pos = self.control._get_cursor().position()
-                self.control._append_html('<small>%s</small>' % default_gui_banner.replace('\n', '<br>').strip())
-                if int(self.get_settings('propertize', DEFAULT_PROPERTIZE)):
-                    propertize_text = ("""All returning-something and no-args <code>core</code> and <code>gui</code> <code>Qgs*</code> class members have a <code>p_*</code> equivalent property to ease class introspection with <strong>TAB</strong> completion.""")
-                else:
-                    propertize_text = _tr("""Propertize has been disabled, you can re-activate it in the pugin's settings.""")
-                self.control._append_html( _tr("""<br><h3>Welcome to QGIS <a href="https://ipython.org/">IPython</a> Console</h3>
-                You have access to <code>canvas</code>, <code>iface</code>, <code>app</code> (QGIS application) objects and to all <code>qgis</code> and <code>PyQt4</code> <code>core</code> and <code>gui</code> modules directly from the shell. %s Don't forget that you have access to all your underlying shell commands too!<br>
-                <em>Enjoy IPyConsole! Another hack by <a href="http://www.itopen.it">ItOpen</a></em></br>
-                """) % propertize_text)
+                if int(self.get_settings('show_help', DEFAULT_SHOW_HELP)):
+                    self.control._append_html('<small>%s</small>' % default_gui_banner.replace('\n', '<br>').strip())
+                    if int(self.get_settings('propertize', DEFAULT_PROPERTIZE)):
+                        propertize_text = ("""All returning-something and no-args <code>core</code> and <code>gui</code> <code>Qgs*</code> class members have a <code>p_*</code> equivalent property to ease class introspection with <strong>TAB</strong> completion.""")
+                    else:
+                        propertize_text = _tr("""Propertize has been disabled, you can re-activate it in the pugin's settings.""")
+                    self.control._append_html( _tr("""<br><h3>Welcome to QGIS <a href="https://ipython.org/">IPython</a> Console</h3>
+                    You have access to <code>canvas</code>, <code>iface</code>, <code>app</code> (QGIS application) objects and to all <code>qgis</code> and <code>PyQt4</code> <code>core</code> and <code>gui</code> modules directly from the shell. %s Don't forget that you have access to all your underlying shell commands too!<br>
+                    <em>Enjoy IPyConsole! Another hack by <a href="http://www.itopen.it">ItOpen</a></em></br>
+                    """) % propertize_text)
 
             def monkey_patch_columnize(control):
                 """As the name suggests... dynamic column number: stock

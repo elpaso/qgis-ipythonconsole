@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1115</width>
-    <height>710</height>
+    <width>300</width>
+    <height>200</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,6 +35,40 @@
          <string>General</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_3">
+         <item row="1" column="0">
+          <widget class="QGroupBox" name="groupBox_2">
+           <property name="title">
+            <string>Startup options</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_8">
+            <item row="1" column="0">
+             <widget class="QCheckBox" name="auto_open">
+              <property name="text">
+               <string>Launch automatically when QGIS starts</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QCheckBox" name="show_help">
+              <property name="text">
+               <string>Show help message when IPyConsole starts</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+           <widget class="QWidget" name="verticalLayoutWidget">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>964</width>
+              <height>2</height>
+             </rect>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_2"/>
+           </widget>
+          </widget>
+         </item>
          <item row="0" column="0">
           <layout class="QGridLayout" name="gridLayout">
            <item row="1" column="0" colspan="2">
@@ -86,7 +120,7 @@
            </item>
           </layout>
          </item>
-         <item row="2" column="0">
+         <item row="7" column="0">
           <spacer name="verticalSpacer">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -98,13 +132,6 @@
             </size>
            </property>
           </spacer>
-         </item>
-         <item row="1" column="0">
-          <widget class="QCheckBox" name="auto_open">
-           <property name="text">
-            <string>Launch automatically when QGIS starts</string>
-           </property>
-          </widget>
          </item>
         </layout>
        </widget>
@@ -118,15 +145,14 @@
            <item row="0" column="0">
             <widget class="QLabel" name="label_4">
              <property name="text">
-              <string>&lt;h3&gt;Python code configuration&lt;/h3&gt;
-&lt;p&gt;&lt;code&gt;propertize&lt;/code&gt; adds &lt;code&gt;p_&lt;/code&gt; prefixed alias properties for all (0-arguments and returning-something) functions in &lt;code&gt;Qgs*&lt;/code&gt; classes from &lt;code&gt;qgis.core&lt;/code&gt; and  &lt;code&gt;qgis.gui&lt;/code&gt; modules.&lt;/p&gt;
+              <string>&lt;p&gt;&lt;code&gt;&lt;b&gt;propertize&lt;/b&gt;&lt;/code&gt; adds &lt;code&gt;&lt;b&gt;p_&lt;/b&gt;&lt;/code&gt; prefixed alias properties for all (0-arguments and returning-something) functions in &lt;code&gt;&lt;b&gt;Qgs*&lt;/b&gt;&lt;/code&gt; classes from &lt;code&gt;&lt;b&gt;qgis.core&lt;/b&gt;&lt;/code&gt; and  &lt;code&gt;&lt;b&gt;qgis.gui&lt;/b&gt;&lt;/code&gt; modules.&lt;/p&gt;
 &lt;p&gt;This is extremely useful when working with IPython's amazing &lt;b&gt;TAB&lt;/b&gt; completion feature.&lt;/b&gt;
 &lt;p&gt;For example, you will be able to &lt;b&gt;TAB&lt;/b&gt;-complete the following statement in IPython console:
-&lt;pre&gt;
+&lt;pre&gt;&lt;b&gt;
 registry = core.QgsMapLayerRegistry.instance()
 layer = registry.p_mapLayers.values()[0]
 layer.p_crs.p_authid
-&lt;/pre&gt;
+&lt;/b&gt;&lt;/pre&gt;
 &lt;/p&gt;</string>
              </property>
              <property name="alignment">

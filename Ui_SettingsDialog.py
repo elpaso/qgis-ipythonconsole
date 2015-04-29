@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'Ui_SettingsDialog.ui'
 #
-# Created: Fri Apr 24 15:55:59 2015
+# Created: Tue Apr 28 15:31:31 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_SettingsDialog(object):
     def setupUi(self, SettingsDialog):
         SettingsDialog.setObjectName(_fromUtf8("SettingsDialog"))
-        SettingsDialog.resize(1115, 710)
+        SettingsDialog.resize(300, 200)
         self.gridLayout_2 = QtGui.QGridLayout(SettingsDialog)
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
         self.verticalLayout = QtGui.QVBoxLayout()
@@ -43,6 +43,23 @@ class Ui_SettingsDialog(object):
         self.tab.setObjectName(_fromUtf8("tab"))
         self.gridLayout_3 = QtGui.QGridLayout(self.tab)
         self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
+        self.groupBox_2 = QtGui.QGroupBox(self.tab)
+        self.groupBox_2.setObjectName(_fromUtf8("groupBox_2"))
+        self.gridLayout_8 = QtGui.QGridLayout(self.groupBox_2)
+        self.gridLayout_8.setObjectName(_fromUtf8("gridLayout_8"))
+        self.auto_open = QtGui.QCheckBox(self.groupBox_2)
+        self.auto_open.setObjectName(_fromUtf8("auto_open"))
+        self.gridLayout_8.addWidget(self.auto_open, 1, 0, 1, 1)
+        self.show_help = QtGui.QCheckBox(self.groupBox_2)
+        self.show_help.setObjectName(_fromUtf8("show_help"))
+        self.gridLayout_8.addWidget(self.show_help, 0, 0, 1, 1)
+        self.verticalLayoutWidget = QtGui.QWidget(self.groupBox_2)
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(0, 0, 964, 2))
+        self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
+        self.verticalLayout_2 = QtGui.QVBoxLayout(self.verticalLayoutWidget)
+        self.verticalLayout_2.setMargin(0)
+        self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
+        self.gridLayout_3.addWidget(self.groupBox_2, 1, 0, 1, 1)
         self.gridLayout = QtGui.QGridLayout()
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.groupBox = QtGui.QGroupBox(self.tab)
@@ -70,10 +87,7 @@ class Ui_SettingsDialog(object):
         self.gridLayout.addWidget(self.label_2, 0, 0, 1, 1)
         self.gridLayout_3.addLayout(self.gridLayout, 0, 0, 1, 1)
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout_3.addItem(spacerItem, 2, 0, 1, 1)
-        self.auto_open = QtGui.QCheckBox(self.tab)
-        self.auto_open.setObjectName(_fromUtf8("auto_open"))
-        self.gridLayout_3.addWidget(self.auto_open, 1, 0, 1, 1)
+        self.gridLayout_3.addItem(spacerItem, 7, 0, 1, 1)
         self.tabWidget.addTab(self.tab, _fromUtf8(""))
         self.tab_3 = QtGui.QWidget()
         self.tab_3.setObjectName(_fromUtf8("tab_3"))
@@ -122,21 +136,22 @@ class Ui_SettingsDialog(object):
 
     def retranslateUi(self, SettingsDialog):
         SettingsDialog.setWindowTitle(_translate("SettingsDialog", "Settings", None))
+        self.groupBox_2.setTitle(_translate("SettingsDialog", "Startup options", None))
+        self.auto_open.setText(_translate("SettingsDialog", "Launch automatically when QGIS starts", None))
+        self.show_help.setText(_translate("SettingsDialog", "Show help message when IPyConsole starts", None))
         self.groupBox.setTitle(_translate("SettingsDialog", "Default window mode", None))
         self.windowModeFloating.setText(_translate("SettingsDialog", "floating", None))
         self.windowModeDocked.setText(_translate("SettingsDialog", "docked", None))
         self.label_2.setText(_translate("SettingsDialog", "Console font size", None))
-        self.auto_open.setText(_translate("SettingsDialog", "Launch automatically when QGIS starts", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("SettingsDialog", "General", None))
-        self.label_4.setText(_translate("SettingsDialog", "<h3>Python code configuration</h3>\n"
-"<p><code>propertize</code> adds <code>p_</code> prefixed alias properties for all (0-arguments and returning-something) functions in <code>Qgs*</code> classes from <code>qgis.core</code> and  <code>qgis.gui</code> modules.</p>\n"
+        self.label_4.setText(_translate("SettingsDialog", "<p><code><b>propertize</b></code> adds <code><b>p_</b></code> prefixed alias properties for all (0-arguments and returning-something) functions in <code><b>Qgs*</b></code> classes from <code><b>qgis.core</b></code> and  <code><b>qgis.gui</b></code> modules.</p>\n"
 "<p>This is extremely useful when working with IPython\'s amazing <b>TAB</b> completion feature.</b>\n"
 "<p>For example, you will be able to <b>TAB</b>-complete the following statement in IPython console:\n"
-"<pre>\n"
+"<pre><b>\n"
 "registry = core.QgsMapLayerRegistry.instance()\n"
 "layer = registry.p_mapLayers.values()[0]\n"
 "layer.p_crs.p_authid\n"
-"</pre>\n"
+"</b></pre>\n"
 "</p>", None))
         self.propertize.setText(_translate("SettingsDialog", "Enable propertize", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("SettingsDialog", "Python", None))
