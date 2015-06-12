@@ -205,6 +205,9 @@ class IPyConsole:
                 # Close current
                 self.control.close()
         try:
+            import IPython
+            if IPython.version_info[:2] < (3, 1):
+                raise ImportError
             from IPython.qt.console.rich_ipython_widget import RichIPythonWidget, IPythonWidget
             from IPython.qt.inprocess import QtInProcessKernelManager
             from IPython.lib import guisupport
@@ -276,14 +279,13 @@ class IPyConsole:
             # IPythonWidget.gui_completion : ‘plain’|’droplist’|’ncurses’
             # IPythonWidget.height : Integer
             # IPythonWidget.width : Integer
-            # TODO: settingsurable
+            # TODO: settings
             # myWidget.width = 160
             myWidget.gui_completion = 'plain'
             myWidget.paging = 'none'
             self.control = myWidget()
 
             # Font size regulation
-            # TODO: settingurable
             #self.control.change_font_size(-1)
             font = self.control.font
             font.setPointSize(int(self.get_settings('font_size', DEFAULT_FONT_SIZE)))
@@ -334,8 +336,8 @@ class IPyConsole:
             monkey_patch_columnize(self.control)
             QTimer.singleShot(0, shout)
 
-        except ImportError:
-            QMessageBox.information(self.iface.mainWindow(), _tr(u'Error'), _tr(u'You need to install <b>IPython</b> (and then restart QGIS) before running this <b>IPyConsole</b> plugin.<br>IPython can be installed with <code>pip install IPython</code>. More informations about IPython installation on <a href="https://ipython.org/install.html">https://ipython.org/install.html</a>'))
+        except ImportError, e:
+            QMessageBox.information(self.iface.mainWindow(), _tr(u'Error'), _tr(u'You need to install <b>IPython >= 3.1</b> (and then restart QGIS) before running this <b>IPyConsole</b> plugin.<br>IPython can be installed with <code>pip install "ipython[all]"</code>. More informations about IPython installation on <a href="https://ipython.org/install.html">https://ipython.org/install.html</a><br>The exception message is: %s') % e)
 
 
 if __name__ == "__main__":

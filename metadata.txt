@@ -3,12 +3,14 @@ name=IPyConsole
 qgisMinimumVersion=2.0
 qgisMaximumVersion=2.99
 description=IPython QGIS Console
-version=version 1.0
+version=version 1.2
 author=Alessandro Pasotti
 email=apasotti@gmail.com
 
 
 changelog=
+    1.2 added error message in case IPython version is less than 3.1
+    1.1 added exception message to exception handler on IPython import
     1.0 added option to hide help message, auto-resize for settings dialog
     0.6 added option to launch at start, monkey patched IPython console resize
     0.5 fixed propertize on classmethods, added option to disable
@@ -26,7 +28,11 @@ repository=https://github.com/elpaso/qgis-ipythonconsole
 
 experimental=False
 
-about=A QGIS IPython console with batteries included
+about=This plugin adds a Python console based on IPython.
+    IPython has full introspection support and TAB completion, syntax highlight, online help ad a lot of cool features you will love! Optionally, this plugin creates more "pythonic" interface to Qgs classmethods for an easier introspection and TAB completion of Qgs classes.
+
+    Note: you must separately install IPython and IPython Qt console to use this plugin. On a Debian-like distributions this is as easy as running "pip install ipython[all]"
+
 
 
 ; change icon...
