@@ -91,10 +91,10 @@ class IPyConsole:
             _tr("&Settings"), self.iface.mainWindow())
 
         # connect the actions to the methods
-        self.docked_action.activated.connect(self.docked)
-        self.windowed_action.activated.connect(self.windowed)
-        self.default_action.activated.connect(self.default)
-        self.settings_action.activated.connect(self.show_settings)
+        self.docked_action.triggered.connect(self.docked)
+        self.windowed_action.triggered.connect(self.windowed)
+        self.default_action.triggered.connect(self.default)
+        self.settings_action.triggered.connect(self.show_settings)
 
         # Add toolbar button
         self.iface.addToolBarIcon(self.default_action)
@@ -206,7 +206,7 @@ class IPyConsole:
                 self.control.close()
         try:
             import IPython
-            if IPython.version_info[:2] < (3, 1):
+            if IPython.version_info[:2] != (3, 1):
                 raise ImportError
             from IPython.qt.console.rich_ipython_widget import RichIPythonWidget, IPythonWidget
             from IPython.qt.inprocess import QtInProcessKernelManager
@@ -337,7 +337,7 @@ class IPyConsole:
             QTimer.singleShot(0, shout)
 
         except ImportError, e:
-            QMessageBox.information(self.iface.mainWindow(), _tr(u'Error'), _tr(u'You need to install <b>IPython >= 3.1</b> (and then restart QGIS) before running this <b>IPyConsole</b> plugin.<br>IPython can be installed with <code>pip install "ipython[all]"</code>. More informations about IPython installation on <a href="https://ipython.org/install.html">https://ipython.org/install.html</a><br>The exception message is: %s') % e)
+            QMessageBox.information(self.iface.mainWindow(), _tr(u'Error'), _tr(u'You need to install <b>IPython 3.1.0</b> (and then restart QGIS) before running this <b>IPyConsole</b> plugin.<br>IPython can be installed with <code>pip install "ipython[all]==3.1.0"</code>. More informations about IPython installation on <a href="https://ipython.org/install.html">https://ipython.org/install.html</a><br>The exception message is: %s') % e)
 
 
 if __name__ == "__main__":
