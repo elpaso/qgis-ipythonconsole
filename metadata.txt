@@ -32,7 +32,7 @@ experimental=False
 about=This plugin adds a Python console based on IPython.
     IPython has full introspection support and TAB completion, syntax highlight, online help ad a lot of cool features you will love! Optionally, this plugin creates more "pythonic" interface to Qgs classmethods for an easier introspection and TAB completion of Qgs classes.
 
-    Note: you must separately install IPython and IPython Qt console to use this plugin. On a Debian-like distributions this is as easy as running "pip install ipython[all]"
+    Note: you must separately install IPython and IPython Qt console to use this plugin. On a Debian-like distributions this is as easy as running "pip install 'ipython[all]==3.1.0'"
 
 
 
