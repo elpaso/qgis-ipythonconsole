@@ -1,14 +1,15 @@
 [general]
 name=IPyConsole
 qgisMinimumVersion=2.0
-qgisMaximumVersion=2.99
+qgisMaximumVersion=3.0
 description=IPython QGIS Console
-version=version 1.3
+version=version 1.4
 author=Alessandro Pasotti
 email=apasotti@gmail.com
 
 
 changelog=
+    1.4 removed limit IPython version == 3.1.0: now tested on Jupyter 1.0.0
     1.3 fixed loading issue ans set IPython version == 3.1.0, thanks to "dmofot"
     1.2 added error message in case IPython version is less than 3.1
     1.1 added exception message to exception handler on IPython import

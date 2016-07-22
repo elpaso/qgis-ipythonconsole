@@ -206,9 +206,7 @@ class IPyConsole:
                 self.control.close()
         try:
             import IPython
-            if IPython.version_info[:2] != (3, 1):
-                raise ImportError
-            from IPython.qt.console.rich_ipython_widget import RichIPythonWidget, IPythonWidget
+            from IPython.qt.console.rich_ipython_widget import RichIPythonWidget
             from IPython.qt.inprocess import QtInProcessKernelManager
             from IPython.lib import guisupport
             from qgis import core, gui
@@ -220,7 +218,6 @@ class IPyConsole:
             kernel_manager.start_kernel()
             kernel = kernel_manager.kernel
             kernel.gui = 'qt4'
-            #import pdb; pyqtRemoveInputHook(); pdb.set_trace()
             kernel.shell.push({
                 'iface': self.iface,
                 'canvas': self.canvas,
@@ -253,7 +250,7 @@ class IPyConsole:
                 self.dock = None
 
              # or RichIPythonWidget
-            class myWidget(IPythonWidget):
+            class myWidget(RichIPythonWidget):
                 def closeEvent(self, event):
                     stop()
                     event.accept()
@@ -293,7 +290,6 @@ class IPyConsole:
             self.control.kernel_manager = kernel_manager
             self.control.kernel_client = kernel_client
             self.control.exit_requested.connect(stop)
-            #import pdb; pyqtRemoveInputHook(); pdb.set_trace()
 
             if not dock:
                 self.status = 'windowed'
@@ -304,15 +300,15 @@ class IPyConsole:
                 self.dock.setWidget(self.control)
                 self.iface.addDockWidget(Qt.BottomDockWidgetArea, self.dock)
 
-            #import pdb; pyqtRemoveInputHook(); pdb.set_trace()
             def shout():
-                from IPython.core.usage import default_gui_banner
+                from IPython.core import usage
                 self.control._control.clear()
                 self.control._reading = False
                 self.control._highlighter.highlighting_on = False
                 self.control._append_before_prompt_pos = self.control._get_cursor().position()
                 if int(self.get_settings('show_help', DEFAULT_SHOW_HELP)):
-                    self.control._append_html('<small>%s</small>' % default_gui_banner.replace('\n', '<br>').strip())
+                    banner = getattr(usage, 'default_banner', usage.default_gui_banner)
+                    self.control._append_html('<small>%s</small>' % banner.replace('\n', '<br>').strip())
                     if int(self.get_settings('propertize', DEFAULT_PROPERTIZE)):
                         propertize_text = ("""All returning-something and no-args <code>core</code> and <code>gui</code> <code>Qgs*</code> class members have a <code>p_*</code> equivalent property to ease class introspection with <strong>TAB</strong> completion.""")
                     else:
@@ -337,7 +333,7 @@ class IPyConsole:
             QTimer.singleShot(0, shout)
 
         except ImportError, e:
-            QMessageBox.information(self.iface.mainWindow(), _tr(u'Error'), _tr(u'You need to install <b>IPython 3.1.0</b> (and then restart QGIS) before running this <b>IPyConsole</b> plugin.<br>IPython can be installed with <code>pip install "ipython[all]==3.1.0"</code>. More informations about IPython installation on <a href="https://ipython.org/install.html">https://ipython.org/install.html</a><br>The exception message is: %s') % e)
+            QMessageBox.information(self.iface.mainWindow(), _tr(u'Error'), _tr(u'You need to install <b>IPython 3.1.0</b> or <b>Jupyter 1.0.0</b>(and then restart QGIS) before running this <b>IPyConsole</b> plugin.<br>IPython can be installed with <code>pip install "ipython[all]==3.1.0"</code> or <code>pip install jupyter==1.0.0</code>. More informations about IPython installation on <a href="https://ipython.org/install.html">https://ipython.org/install.html</a><br>The exception message is: %s') % e)
 
 
 if __name__ == "__main__":
