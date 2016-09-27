@@ -4,5 +4,5 @@
 """
 
 def classFactory(iface):
-  from IPyConsole import IPyConsole
-  return IPyConsole(iface)
+    from .IPyConsole import IPyConsole
+    return IPyConsole(iface)

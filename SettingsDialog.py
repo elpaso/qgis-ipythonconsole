@@ -21,15 +21,14 @@ __date__ = 'April 2015'
 __copyright__ = '(C) 2015, Alessandro Pasotti'
 
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 
-from Ui_SettingsDialog import Ui_SettingsDialog
+from .Ui_SettingsDialog import Ui_SettingsDialog
 
 # create the dialog for Settings
 class SettingsDialog(QDialog, Ui_SettingsDialog):
     def __init__(self):
         QDialog.__init__(self)
         self.setupUi(self)
-
-

@@ -42,24 +42,31 @@ def propertize(cls, prefix='p_', quiet=True):
         def _caller(self, k):
             return getattr(self, k)()
 
-        for k,v in inspect.getmembers(cls):
-            if k.find('__') == -1 \
-                    and inspect.isroutine(v) \
-                    and inspect.getdoc(v) \
-                    and inspect.getdoc(v).find('()') != -1 \
-                    and inspect.getdoc(v).find('->') != -1:
+        for k, v in inspect.getmembers(cls):
+            if (k.find('__') == -1
+                and inspect.isroutine(v)
+                and inspect.getdoc(v)
+                and inspect.getdoc(v).find('()') != -1
+                and inspect.getdoc(v).find('->') != -1):
                 attr_name = prefix + k
 
                 # Works fine on bound virtual methods, doesn't work on
                 # classmethods
-                setattr(cls, attr_name, property(functools.partial(_caller, k=k)))
-                if not quiet:
-                    print 'Propertized %s' % attr_name
+                try:
+                    setattr(cls, attr_name, property(functools.partial(_caller, k=k)))
+                    if not quiet:
+                        print('Propertized %s' % attr_name)
+                except TypeError as e:
+                    if not quiet:
+                        print('Propertized failed for %s' % attr_name)
 
     if  inspect.ismodule(cls):
-        for k,v in inspect.getmembers(cls):
-            if k.find('__') == -1 \
-                    and inspect.isclass(v):
+        if inspect.isbuiltin(cls):
+            return
+        for k, v in inspect.getmembers(cls):
+            if (k.find('__') == -1
+                and inspect.isclass(v)
+                and str(v) != 'str'):
                 _cls_propertize(v, prefix, quiet)
     elif inspect.isclass(cls):
         _cls_propertize(cls, prefix, quiet)
@@ -147,11 +154,6 @@ if __name__ == '__main__':
         def setUp(self):
             propertize(core)
 
-        def test_singleton(self):
-            a = core.QgsMapLayerRegistry.p_instance
-            b = core.QgsMapLayerRegistry.instance()
-            self.assertEqual(a,b)
-            #self.assertEqual(core.QgsMapLayerRegistry.instance(), core.QgsMapLayerRegistry.p_instance)
 
         def test_instance(self):
             self.assertEqual(core.QgsMapLayerRegistry.instance().mapLayers(), {})

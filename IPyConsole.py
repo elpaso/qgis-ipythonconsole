@@ -24,15 +24,23 @@ __copyright__ = '(C) 2015, Alessandro Pasotti'
 import os
 
 # Import the PyQt and QGIS libraries
-
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.uic import loadUi
+try:
+    from qgis.core import Qgis
+    from PyQt5.QtCore import *
+    from PyQt5.QtGui import *
+    from PyQt5.QtWidgets import *
+    from PyQt5 import uic
+    QT_VERSION=5
+    os.environ['QT_API'] = 'pyqt5'
+except:
+    from PyQt4.QtCore import *
+    from PyQt4.QtGui import *
+    from PyQt4 import uic
+    QT_VERSION=4
 
 from qgis.core import *
 
-from propertize import propertize
-import resources_rc
+from .propertize import propertize
 
 PLUGIN_DOMAIN="IPyConsole"
 
@@ -47,9 +55,8 @@ DEFAULT_SHOW_HELP=1
 DEBUG=False
 
 if not DEBUG:
-    from SettingsDialog import SettingsDialog
+    from .SettingsDialog import SettingsDialog
 else:
-    from PyQt4 import uic
     import os
     class SettingsDialog(QDialog):
         def __init__(self):
@@ -205,8 +212,7 @@ class IPyConsole:
                 # Close current
                 self.control.close()
         try:
-            import IPython
-            from IPython.qt.console.rich_ipython_widget import RichIPythonWidget
+            from qtconsole.rich_ipython_widget import RichIPythonWidget
             from IPython.qt.inprocess import QtInProcessKernelManager
             from IPython.lib import guisupport
             from qgis import core, gui
@@ -217,7 +223,7 @@ class IPyConsole:
             kernel_manager = QtInProcessKernelManager()
             kernel_manager.start_kernel()
             kernel = kernel_manager.kernel
-            kernel.gui = 'qt4'
+            kernel.gui = 'qt%s' % (QT_VERSION if QT_VERSION != 5 else '')
             kernel.shell.push({
                 'iface': self.iface,
                 'canvas': self.canvas,
@@ -228,11 +234,12 @@ class IPyConsole:
                 'app': app,
             })
             if int(self.get_settings('propertize', DEFAULT_PROPERTIZE)):
-                kernel.shell.ex('propertize(core)')
-                kernel.shell.ex('propertize(gui)')
+                #kernel.shell.ex('propertize(core)')
+                #kernel.shell.ex('propertize(gui)')
+                pass
             # Import in the current namespace
-            kernel.shell.ex('from PyQt4.QtCore import *')
-            kernel.shell.ex('from PyQt4.QtGui import *')
+            kernel.shell.ex('from PyQt%s.QtCore import *' % QT_VERSION)
+            kernel.shell.ex('from PyQt%s.QtGui import *' % QT_VERSION)
             kernel.shell.ex('from qgis.core import *')
             kernel.shell.ex('from qgis.gui import *')
 
@@ -262,7 +269,7 @@ class IPyConsole:
 
                 def get_columns(self):
                     font_width = QFontMetrics(self.font).width(' ')
-                    return self.size().width() / font_width
+                    return int(self.size().width() / font_width)
 
                 def console_resize(self):
                     self.width = self.get_columns()
@@ -314,7 +321,7 @@ class IPyConsole:
                     else:
                         propertize_text = _tr("""Propertize has been disabled, you can re-activate it in the pugin's settings.""")
                     self.control._append_html( _tr("""<br><h3>Welcome to QGIS <a href="https://ipython.org/">IPython</a> Console</h3>
-                    You have access to <code>canvas</code>, <code>iface</code>, <code>app</code> (QGIS application) objects and to all <code>qgis</code> and <code>PyQt4</code> <code>core</code> and <code>gui</code> modules directly from the shell. %s Don't forget that you have access to all your underlying shell commands too!<br>
+                    You have access to <code>canvas</code>, <code>iface</code>, <code>app</code> (QGIS application) objects and to all <code>qgis</code> and <code>PyQt</code> <code>core</code> and <code>gui</code> modules directly from the shell. %s Don't forget that you have access to all your underlying shell commands too!<br>
                     <em>Enjoy IPyConsole! Another hack by <a href="http://www.itopen.it">ItOpen</a></em></br>
                     """) % propertize_text)
 
@@ -332,8 +339,8 @@ class IPyConsole:
             monkey_patch_columnize(self.control)
             QTimer.singleShot(0, shout)
 
-        except ImportError, e:
-            QMessageBox.information(self.iface.mainWindow(), _tr(u'Error'), _tr(u'You need to install <b>IPython 3.1.0</b> or <b>Jupyter 1.0.0</b>(and then restart QGIS) before running this <b>IPyConsole</b> plugin.<br>IPython can be installed with <code>pip install "ipython[all]==3.1.0"</code> or <code>pip install jupyter==1.0.0</code>. More informations about IPython installation on <a href="https://ipython.org/install.html">https://ipython.org/install.html</a><br>The exception message is: %s') % e)
+        except ImportError as e:
+            QMessageBox.information(self.iface.mainWindow(), _tr(u'Error'), _tr(u'You need to install <b>IPython 3.1.0</b> or <b>Jupyter 1.0.0</b> (and then restart QGIS) before running this <b>IPyConsole</b> plugin.<br>IPython can be installed with <code>pip install "ipython[all]==3.1.0"</code> or <code>pip install jupyter==1.0.0</code>. More informations about IPython installation on <a href="https://ipython.org/install.html">https://ipython.org/install.html</a><br>The exception message is: %s') % e)
 
 
 if __name__ == "__main__":

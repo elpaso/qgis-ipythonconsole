@@ -14,10 +14,10 @@ UI_FILES = Ui_SettingsDialog.py
 compile: $(UI_FILES) $(RESOURCE_FILES)
 
 %_rc.py : %.qrc
-	pyrcc4 -o $@  $<
+	pyrcc5 -o $@  $<
 
 %.py : %.ui
-	pyuic4 -o $@ $<
+	pyuic5 -o $@ $<
 
 
 
