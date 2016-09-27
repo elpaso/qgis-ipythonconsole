@@ -6,7 +6,10 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+try:
+    from PyQt5 import QtCore, QtGui, QtWidgets
+except:
+    from PyQt4 import QtCore, QtGui as QtWidgets
 
 class Ui_SettingsDialog(object):
     def setupUi(self, SettingsDialog):

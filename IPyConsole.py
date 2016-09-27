@@ -234,9 +234,8 @@ class IPyConsole:
                 'app': app,
             })
             if int(self.get_settings('propertize', DEFAULT_PROPERTIZE)):
-                #kernel.shell.ex('propertize(core)')
-                #kernel.shell.ex('propertize(gui)')
-                pass
+                kernel.shell.ex('propertize(core)')
+                kernel.shell.ex('propertize(gui)')
             # Import in the current namespace
             kernel.shell.ex('from PyQt%s.QtCore import *' % QT_VERSION)
             kernel.shell.ex('from PyQt%s.QtGui import *' % QT_VERSION)

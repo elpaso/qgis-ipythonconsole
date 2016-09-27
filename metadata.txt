@@ -1,6 +1,6 @@
 [general]
 name=IPyConsole
-qgisMinimumVersion=2.99
+qgisMinimumVersion=2.14
 qgisMaximumVersion=3.99
 description=IPython QGIS Console
 version=version 1.5

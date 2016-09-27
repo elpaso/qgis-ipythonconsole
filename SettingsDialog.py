@@ -21,9 +21,11 @@ __date__ = 'April 2015'
 __copyright__ = '(C) 2015, Alessandro Pasotti'
 
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+
+try:
+    from PyQt5.QtWidgets import *
+except:
+    from PyQt4.QtGui import *
 
 from .Ui_SettingsDialog import Ui_SettingsDialog
 
