@@ -9,7 +9,7 @@ email=apasotti@gmail.com
 
 
 changelog=
-    1.5 tested on current master QGIS 3.0 with Qt5/Py3
+    1.5 tested on current master QGIS 3.0 with Qt5/Py3, added instructions for windows installation
     1.4 removed limit IPython version == 3.1.0: now tested on Jupyter 1.0.0
     1.3 fixed loading issue ans set IPython version == 3.1.0, thanks to "dmofot"
     1.2 added error message in case IPython version is less than 3.1
@@ -34,7 +34,7 @@ experimental=False
 about=This plugin adds a Python console based on IPython.
     IPython has full introspection support and TAB completion, syntax highlight, online help ad a lot of cool features you will love! Optionally, this plugin creates more "pythonic" interface to Qgs classmethods for an easier introspection and TAB completion of Qgs classes.
 
-    Note: you must separately install IPython and IPython Qt console to use this plugin. On a Debian-like distributions this is as easy as running "pip install 'ipython[all]==3.1.0'"
+    Note: you must separately install IPython and IPython Qt console to use this plugin. On a Debian-like distributions this is as easy as running "pip install 'ipython[all]==3.1.0 qtconsole' or (better) "pip install jupyter==1.0.0 qtconsole". To install packages with 'pip' you may need root/admin privileges.
 
 
 
