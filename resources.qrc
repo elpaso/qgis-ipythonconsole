@@ -1,7 +1,0 @@
-<RCC>
-  <qresource prefix="/plugins/IPyConsole/" >
-    <file>icons/icon.png</file>
-    <file>icons/paypal.png</file>
-    <file>icons/settings.svg</file>
-  </qresource>
-</RCC>

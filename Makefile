@@ -8,8 +8,8 @@ install: copy2qgis
 
 PY_FILES = IPyConsole.py __init__.py
 EXTRAS = icon.png settings.svg
-UI_FILES = Ui_SettingsDialog.py
-                                                                                                                                                                                                                                                                                                                                                                                                               RESOURCE_FILES = resources_rc.py
+#UI_FILES = Ui_SettingsDialog.py
+                                                                                                                                                                                                                                                                                                                                                                                                               #RESOURCE_FILES=resources_rc.py
 
 compile: $(UI_FILES) $(RESOURCE_FILES)
 

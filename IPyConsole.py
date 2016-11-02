@@ -4,8 +4,9 @@
 ***************************************************************************
     IPyConsole.py
     ---------------------
-    Date                 : April 2015
-    Copyright            : (C) 2015 by Alessandro Pasotti (ItOpen)
+    Begin                : April 2015
+    Date                 : November 2016
+    Copyright            : (C) 2015-2016 by Alessandro Pasotti (ItOpen)
     Email                : apasotti at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -16,12 +17,14 @@
 *                                                                         *
 ***************************************************************************
 """
-__author__ = 'Alessandro Pasotti'
-__date__ = 'April 2015'
-__copyright__ = '(C) 2015, Alessandro Pasotti'
-
 
 import os
+import inspect
+
+__author__ = 'Alessandro Pasotti'
+__date__ = 'November 2016'
+__copyright__ = '(C) 2015-2016, Alessandro Pasotti'
+
 
 # Import the PyQt and QGIS libraries
 try:
@@ -39,7 +42,6 @@ except:
     QT_VERSION=4
 
 from qgis.core import *
-
 from .propertize import propertize
 
 PLUGIN_DOMAIN="IPyConsole"
@@ -51,18 +53,29 @@ DEFAULT_PROPERTIZE=1
 DEFAULT_AUTO_OPEN=0
 DEFAULT_SHOW_HELP=1
 
-# Loads GUI from .ui
-DEBUG=False
 
-if not DEBUG:
-    from .SettingsDialog import SettingsDialog
-else:
-    import os
-    class SettingsDialog(QDialog):
-        def __init__(self):
-            super(SettingsDialog, self ).__init__()
-            uic.loadUi(os.path.join(os.path.dirname(__file__), 'Ui_SettingsDialog.ui'), self)
-            QMetaObject.connectSlotsByName(self)
+class SettingsDialog(QDialog):
+    """Dumb dialog for settings"""
+
+    def __init__(self, console_font):
+        super(SettingsDialog, self ).__init__()
+        self.console_font = console_font
+        uic.loadUi(os.path.join(os.path.dirname(__file__), 'Ui_SettingsDialog.ui'), self)
+        QMetaObject.connectSlotsByName(self)
+        self.update_label()
+        self.btn_fontEdit.clicked.connect(self.on_fontEdit_clicked)
+
+    def update_label(self):
+        self.lbl_font.setFont(self.console_font)
+        self.lbl_font.setText(_tr("Current console font (%s [%s])" % (self.console_font.family(), self.console_font.pointSize())))
+
+    def on_fontEdit_clicked(self):
+        fd = QFontDialog()
+        (font, ok) = fd.getFont()
+        if ok:
+            self.console_font = font
+            self.update_label()
+
 
 def _tr(s):
     """Translate, save some typing"""
@@ -76,6 +89,8 @@ class IPyConsole:
         self.iface = iface
         self.canvas = iface.mapCanvas()
         self.status = None
+        self.control = None
+        self.console_font = None
         self.settingsDlg = None
         self.settings =  QSettings('ItOpen', PLUGIN_DOMAIN)
         # If auto_open: connect
@@ -88,13 +103,14 @@ class IPyConsole:
 
     def initGui(self):
         # Create action that will start plugin
-        self.default_action = QAction(QIcon(":/plugins/IPyConsole/icons/icon.png"), \
+        current_directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+        self.default_action = QAction(QIcon(os.path.join(current_directory, "icons", "icon.png")),
             _tr("&IPython QGIS Console"), self.iface.mainWindow())
-        self.docked_action = QAction(QIcon(":/plugins/IPyConsole/icons/icon.png"), \
+        self.docked_action = QAction(QIcon(os.path.join(current_directory, "icons", "icon.png")),
             _tr("&Docked"), self.iface.mainWindow())
-        self.windowed_action = QAction(QIcon(":/plugins/IPyConsole/icons/icon.png"), \
+        self.windowed_action = QAction(QIcon(os.path.join(current_directory, "icons", "icon.png")),
             _tr("&Windowed"), self.iface.mainWindow())
-        self.settings_action = QAction(QIcon(":/plugins/IPyConsole/icons/settings.svg"), \
+        self.settings_action = QAction(QIcon(os.path.join(current_directory, "icons", "settings.svg")),
             _tr("&Settings"), self.iface.mainWindow())
 
         # connect the actions to the methods
@@ -108,7 +124,7 @@ class IPyConsole:
 
         # Build menu
         self.menu = QMenu(_tr("&IPython QGIS Console"))
-        self.menu.setIcon(QIcon(":/plugins/IPyConsole/icons/icon.png"))
+        self.menu.setIcon(QIcon(os.path.join(current_directory, "icons", "icon.png")))
         self.menu.addActions([self.docked_action, self.windowed_action, self.settings_action])
         self.iface.pluginMenu().addMenu( self.menu )
 
@@ -137,18 +153,25 @@ class IPyConsole:
     def docked(self):
         self.run(dock=True)
 
+
+    def set_font(self):
+        """Read font from settings"""
+        font_family = self.get_settings('font_family', QFont().family())
+        font_size = int(self.get_settings('font_size', DEFAULT_FONT_SIZE))
+        font = QFont(font_family, font_size)
+        self.console_font = font
+
     def show_settings(self):
         if self.settingsDlg is None:
             self.read_settings()
-            self.settingsDlg = SettingsDialog()
+            self.set_font()
+            self.settingsDlg = SettingsDialog(self.console_font)
             # Set values
             winmode = self.get_settings('default_window_mode', DEFAULT_WINDOW_MODE)
             if winmode == 'docked':
                 self.settingsDlg.windowModeDocked.setChecked(True)
             else:
                 self.settingsDlg.windowModeFloating.setChecked(True)
-            font_size =  self.get_settings('font_size', DEFAULT_FONT_SIZE)
-            self.settingsDlg.fontSize.setValue(int(font_size))
             propertize_setting = self.get_settings('propertize', DEFAULT_PROPERTIZE)
             self.settingsDlg.propertize.setChecked(int(propertize_setting))
             auto_open = self.get_settings('auto_open', DEFAULT_AUTO_OPEN)
@@ -160,8 +183,11 @@ class IPyConsole:
         self.settingsDlg.adjustSize()
         result = self.settingsDlg.exec_()
         if result:
-            #import pdb; pyqtRemoveInputHook(); pdb.set_trace()
-            self.set_settings('font_size', self.settingsDlg.fontSize.value())
+            self.set_settings('font_family', self.settingsDlg.console_font.family())
+            self.set_settings('font_size', self.settingsDlg.console_font.pointSize())
+            self.set_font()
+            if self.control is not None:
+                self.control._set_font(self.console_font)
             winmode = 'windowed'
             if self.settingsDlg.windowModeFloating.isChecked():
                 winmode = DEFAULT_WINDOW_MODE
@@ -197,7 +223,6 @@ class IPyConsole:
             QMessageBox.information(self.iface.mainWindow(), _tr("IPyConsole settings") ,infoString)
             return
         self.settings.sync()
-        qDebug('IPyConsole settings written on ' + self.settings.fileName())
 
     # run
     def run(self, dock=False):
@@ -267,7 +292,10 @@ class IPyConsole:
                     event.accept()
 
                 def get_columns(self):
-                    font_width = QFontMetrics(self.font).width(' ')
+                    try:
+                        font_width = QFontMetrics(self.font).width(' ')
+                    except TypeError:
+                        font_width = 10
                     return int(self.size().width() / font_width)
 
                 def console_resize(self):
@@ -288,11 +316,6 @@ class IPyConsole:
             myWidget.paging = 'none'
             self.control = myWidget()
 
-            # Font size regulation
-            #self.control.change_font_size(-1)
-            font = self.control.font
-            font.setPointSize(int(self.get_settings('font_size', DEFAULT_FONT_SIZE)))
-            self.control._set_font(font)
             self.control.kernel_manager = kernel_manager
             self.control.kernel_client = kernel_client
             self.control.exit_requested.connect(stop)
@@ -305,6 +328,10 @@ class IPyConsole:
                 self.dock = myDock()
                 self.dock.setWidget(self.control)
                 self.iface.addDockWidget(Qt.BottomDockWidgetArea, self.dock)
+
+            # Font size regulation
+            self.set_font()
+            self.control._set_font(self.console_font)
 
             def shout():
                 from IPython.core import usage
