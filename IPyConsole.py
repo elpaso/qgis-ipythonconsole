@@ -71,7 +71,7 @@ class SettingsDialog(QDialog):
 
     def on_fontEdit_clicked(self):
         fd = QFontDialog()
-        (font, ok) = fd.getFont()
+        (font, ok) = fd.getFont(self.console_font)
         if ok:
             self.console_font = font
             self.update_label()
