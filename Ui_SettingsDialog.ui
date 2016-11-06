@@ -96,14 +96,14 @@
                 <item>
                  <widget class="QRadioButton" name="windowModeFloating">
                   <property name="text">
-                   <string>floating</string>
+                   <string>Windowed</string>
                   </property>
                  </widget>
                 </item>
                 <item>
                  <widget class="QRadioButton" name="windowModeDocked">
                   <property name="text">
-                   <string>docked</string>
+                   <string>Docked</string>
                   </property>
                  </widget>
                 </item>

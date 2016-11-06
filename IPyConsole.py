@@ -47,7 +47,7 @@ from .propertize import propertize
 PLUGIN_DOMAIN="IPyConsole"
 
 # Defaults for settings
-DEFAULT_WINDOW_MODE='windowed'
+DEFAULT_WINDOW_MODE='docked'
 DEFAULT_FONT_SIZE=10
 DEFAULT_PROPERTIZE=1
 DEFAULT_AUTO_OPEN=0
@@ -188,9 +188,8 @@ class IPyConsole:
             self.set_font()
             if self.control is not None:
                 self.control._set_font(self.console_font)
-            winmode = 'windowed'
             if self.settingsDlg.windowModeFloating.isChecked():
-                winmode = DEFAULT_WINDOW_MODE
+                winmode = 'windowed'
             elif self.settingsDlg.windowModeDocked.isChecked():
                 winmode = 'docked'
             self.set_settings('default_window_mode', winmode)
@@ -229,6 +228,9 @@ class IPyConsole:
         # Checks if a console is open
         if self.status is not None:
             if (dock and self.status == 'docked') or (not dock and self.status == 'windowed'):
+                if self.status == 'windowed':
+                    self.control.raise_()
+                    self.control.activateWindow()
                 return
             elif self.status == 'docked':
                 # Close current
@@ -242,7 +244,7 @@ class IPyConsole:
             from IPython.lib import guisupport
             from qgis import core, gui
 
-            app = guisupport.get_app_qt4()
+            #app = guisupport.get_app_qt4()
 
             # Create an in-process kernel
             kernel_manager = QtInProcessKernelManager()
@@ -256,7 +258,7 @@ class IPyConsole:
                 'gui' : gui,
                 'propertize': propertize,
                 'plugin_instance' : self,
-                'app': app,
+                #'app': app,
             })
             if int(self.get_settings('propertize', DEFAULT_PROPERTIZE)):
                 kernel.shell.ex('propertize(core)')
