@@ -5,8 +5,8 @@
     IPyConsole.py
     ---------------------
     Begin                : April 2015
-    Date                 : November 2016
-    Copyright            : (C) 2015-2016 by Alessandro Pasotti (ItOpen)
+    Date                 : January 2017
+    Copyright            : (C) 2015-2017 by Alessandro Pasotti (ItOpen)
     Email                : apasotti at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -22,8 +22,8 @@ import os
 import inspect
 
 __author__ = 'Alessandro Pasotti'
-__date__ = 'November 2016'
-__copyright__ = '(C) 2015-2016, Alessandro Pasotti'
+__date__ = 'Juanuary 2017'
+__copyright__ = '(C) 2015-2017, Alessandro Pasotti'
 
 
 # Import the PyQt and QGIS libraries
@@ -239,11 +239,15 @@ class IPyConsole:
                 # Close current
                 self.control.close()
         try:
-            from qtconsole.rich_ipython_widget import RichIPythonWidget
+            if QT_VERSION==4:
+                from IPython.qt.console.rich_ipython_widget import RichIPythonWidget
+            else:
+                from qtconsole.rich_ipython_widget import RichIPythonWidget
+
             from IPython.qt.inprocess import QtInProcessKernelManager
-            from IPython.lib import guisupport
             from qgis import core, gui
 
+            #from IPython.lib import guisupport
             #app = guisupport.get_app_qt4()
 
             # Create an in-process kernel
