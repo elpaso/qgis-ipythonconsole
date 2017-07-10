@@ -3,12 +3,13 @@ name=IPyConsole
 qgisMinimumVersion=2.14
 qgisMaximumVersion=3.99
 description=IPython QGIS Console
-version=version 1.7
+version=version 1.8
 author=Alessandro Pasotti
 email=apasotti@gmail.com
 
 
 changelog=
+    1.8 Fixes #10 and remove paypal link
     1.7 Bring into front fixes #8 default to docked fixes #9
     1.6 Console font selection in settings
     1.5 tested on current master QGIS 3.0 with Qt5/Py3, added instructions for windows installation
