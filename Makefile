@@ -27,7 +27,11 @@ clean:
 	rm -f Ui_IPyConsole.py resources_rc.py
 
 package:
-	cd .. && find IPyConsole/  -print|grep -v Make | grep -v .pyc | grep -v zip | grep -v .git | zip IPyConsole.zip -@
+	cd .. && if \[ -f IPyConsole.zip \] ; \
+	then \
+     	rm IPyConsole.zip ; \
+	fi;
+	cd .. && find IPyConsole/  -print|grep -v Make | grep -v .pyc | grep -v zip | grep -v vscode | grep -v .git | zip IPyConsole.zip -@
 
 localrepo:
 	cp ../IPyConsole.zip ~/public_html/qgis/IPyConsole.zip
