@@ -135,6 +135,10 @@ class IPyConsole:
         self.iface.removePluginMenu("IPyConsole", self.windowed_action)
         self.iface.removePluginMenu("IPyConsole", self.settings_action)
         self.iface.removeToolBarIcon(self.default_action)
+        if self.dock is not None:
+            self.dock.close()
+        if self.control is not None:
+            self.control.close()
 
 
     def default(self):
@@ -344,7 +348,11 @@ class IPyConsole:
                 self.control._control.clear()
                 self.control._reading = False
                 self.control._highlighter.highlighting_on = False
-                self.control._append_before_prompt_pos = self.control._get_cursor().position()
+                try:
+                    self.control._append_before_prompt_pos = self.control._get_cursor().position()
+                except Exception as ex:
+                    # Can't set attribute .... on mac/win
+                    pass
                 if int(self.get_settings('show_help', DEFAULT_SHOW_HELP)):
                     banner = getattr(usage, 'default_banner', usage.default_gui_banner)
                     self.control._append_html('<small>%s</small>' % banner.replace('\n', '<br>').strip())
