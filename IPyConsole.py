@@ -92,6 +92,7 @@ class IPyConsole:
         self.control = None
         self.console_font = None
         self.settingsDlg = None
+        self.dock = None
         self.settings =  QSettings('ItOpen', PLUGIN_DOMAIN)
         # If auto_open: connect
         if int(self.get_settings('auto_open', DEFAULT_AUTO_OPEN)):
@@ -238,7 +239,8 @@ class IPyConsole:
                 return
             elif self.status == 'docked':
                 # Close current
-                self.dock.close()
+                if self.dock is not None:
+                    self.dock.close()
             else:
                 # Close current
                 self.control.close()
