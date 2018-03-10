@@ -44,9 +44,9 @@ def propertize(cls, prefix='p_', quiet=True):
 
         for k, v in inspect.getmembers(cls):
             if (k.find('__') == -1
-                and inspect.isroutine(v)
+                and (inspect.isroutine(v) or inspect.isbuiltin(v))
                 and inspect.getdoc(v)
-                and inspect.getdoc(v).find('()') != -1
+                and (inspect.getdoc(v).find('()') != -1 or inspect.getdoc(v).find('(self)') != -1)
                 and inspect.getdoc(v).find('->') != -1):
                 attr_name = prefix + k
 
@@ -152,14 +152,14 @@ if __name__ == '__main__':
     class TestQGIS(unittest.TestCase):
 
         def setUp(self):
+            self.app = core.QgsApplication([], True)
             propertize(core)
 
 
         def test_instance(self):
-            self.assertEqual(core.QgsMapLayerRegistry.instance().mapLayers(), {})
-            self.assertEqual(core.QgsMapLayerRegistry.instance().p_mapLayers, core.QgsMapLayerRegistry.instance().mapLayers())
+            project = core.QgsProject.instance()
+            self.assertEqual(project.mapLayers(), {})
+            self.assertEqual(project.p_mapLayers, project.mapLayers())
 
-
-    #from IPython import embed; embed()
 
     unittest.main()

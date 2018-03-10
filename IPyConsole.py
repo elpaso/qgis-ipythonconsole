@@ -253,10 +253,7 @@ class IPyConsole:
             from IPython.qt.inprocess import QtInProcessKernelManager
             from qgis import core, gui
 
-            #from IPython.lib import guisupport
-            #app = guisupport.get_app_qt4()
-
-            # Create an in-process kernel
+           # Create an in-process kernel
             kernel_manager = QtInProcessKernelManager()
             kernel_manager.start_kernel()
             kernel = kernel_manager.kernel
