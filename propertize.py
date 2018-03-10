@@ -28,7 +28,12 @@ __author__ = 'Alessandro Pasotti'
 __date__ = 'April 2015'
 __copyright__ = '(C) 2015, Alessandro Pasotti'
 
-
+try:
+    from qgis.core import Qgis
+    QGIS_IS3 = True
+except:
+    QGIS_IS3 = False
+    
 import inspect
 import functools
 def propertize(cls, prefix='p_', quiet=True):
@@ -42,12 +47,16 @@ def propertize(cls, prefix='p_', quiet=True):
         def _caller(self, k):
             return getattr(self, k)()
 
-        for k, v in inspect.getmembers(cls):
-            if (k.find('__') == -1
+        def is_supported(k, v):
+            return (k.find('__') == -1
                 and (inspect.isroutine(v) or inspect.isbuiltin(v))
                 and inspect.getdoc(v)
-                and (inspect.getdoc(v).find('()') != -1 or inspect.getdoc(v).find('(self)') != -1)
-                and inspect.getdoc(v).find('->') != -1):
+                and inspect.getdoc(v).find('()' if not QGIS_IS3 else '(self)') != -1
+                and inspect.getdoc(v).find('->') != -1)
+
+
+        for k, v in inspect.getmembers(cls):
+            if is_supported(k, v):
                 attr_name = prefix + k
 
                 # Works fine on bound virtual methods, doesn't work on
@@ -81,30 +90,30 @@ if __name__ == '__main__':
     class Animal():
         @classmethod
         def whoami(cls):
-            """ () -> """
+            """ (self) -> """
             return 'Animal'
         def say(self):
-            """ () -> """
+            """ (self) -> """
             return 'sound'
         def move(self):
-            """ () -> """
+            """ (self) -> """
             return 'move'
 
     class Duck(Animal):
         @classmethod
         def whoami(cls):
-            """ () -> """
+            """ (self) -> """
             return 'Duck'
         def say(self):
-            """ () -> """
+            """ (self) -> """
             return 'quack'
         def move(self):
-            """ () -> """
+            """ (self) -> """
             return 'fly'
 
     class Dog(Animal):
         def eat(self):
-            """ () -> """
+            """ (self) -> """
             return 'meat'
 
     propertize(Animal)
@@ -156,10 +165,14 @@ if __name__ == '__main__':
             propertize(core)
 
 
-        def test_instance(self):
+        def test_project_instance(self):
             project = core.QgsProject.instance()
             self.assertEqual(project.mapLayers(), {})
             self.assertEqual(project.p_mapLayers, project.mapLayers())
+
+        def test_application_instance(self):
+            application = core.QgsApplication
+            self.assertEqual(application.instance().p_children, core.QgsApplication.instance().children())
 
 
     unittest.main()
