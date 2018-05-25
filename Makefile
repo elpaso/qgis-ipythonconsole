@@ -6,6 +6,9 @@ dist: package
 
 install: copy2qgis
 
+# QGIS3 default
+QGISDIR=.local/share/QGIS/QGIS3/profiles/default
+
 PY_FILES = IPyConsole.py __init__.py
 EXTRAS = icon.png settings.svg
 #UI_FILES = Ui_SettingsDialog.py
@@ -20,6 +23,8 @@ compile: $(UI_FILES) $(RESOURCE_FILES)
 	pyuic5 -o $@ $<
 
 
+deploy:
+	ln -s `pwd` $(HOME)/$(QGISDIR)/python/plugins/${PWD##*/}
 
 clean:
 	find ./ -name "*.pyc" -exec rm -rf \{\} \;
