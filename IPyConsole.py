@@ -136,9 +136,9 @@ class IPyConsole:
         self.iface.removePluginMenu("IPyConsole", self.windowed_action)
         self.iface.removePluginMenu("IPyConsole", self.settings_action)
         self.iface.removeToolBarIcon(self.default_action)
-        if self.dock is not None:
+        if hasattr(self, 'dock') and self.dock is not None:
             self.dock.close()
-        if self.control is not None:
+        if hasattr(self, 'control') and self.control is not None:
             self.control.close()
 
 
