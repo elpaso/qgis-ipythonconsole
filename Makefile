@@ -23,8 +23,17 @@ compile: $(UI_FILES) $(RESOURCE_FILES)
 	pyuic5 -o $@ $<
 
 
-deploy:
-	ln -s `pwd` $(HOME)/$(QGISDIR)/python/plugins/${PWD##*/}
+builddeps:
+	@if [ ! -d "./ext-libs" ]; then \
+		mkdir ./ext-libs; \
+		pip install --target=./ext-libs -r requirements.txt; \
+	fi
+
+build: builddeps
+
+
+deploy: build
+	ln -s `pwd` $(HOME)/$(QGISDIR)/python/plugins/ipyconsole
 
 clean:
 	find ./ -name "*.pyc" -exec rm -rf \{\} \;
@@ -36,7 +45,7 @@ package:
 	then \
      	rm IPyConsole.zip ; \
 	fi;
-	cd .. && find IPyConsole/  -print|grep -v Make | grep -v .pyc | grep -v zip | grep -v vscode | grep -v .git | zip IPyConsole.zip -@
+	cd .. && find IPyConsole/  -print|grep -v Make |grep -v run* | grep -v .pyc | grep -v zip | grep -v vscode | grep -v .git | zip IPyConsole.zip -@
 
 localrepo:
 	cp ../IPyConsole.zip ~/public_html/qgis/IPyConsole.zip

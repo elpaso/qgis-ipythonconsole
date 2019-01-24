@@ -5,8 +5,8 @@
     IPyConsole.py
     ---------------------
     Begin                : April 2015
-    Date                 : January 2017
-    Copyright            : (C) 2015-2017 by Alessandro Pasotti (ItOpen)
+    Date                 : May 2018
+    Copyright            : (C) 2015-2018 by Alessandro Pasotti (ItOpen)
     Email                : apasotti at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -22,9 +22,13 @@ import os
 import inspect
 
 __author__ = 'Alessandro Pasotti'
-__date__ = 'Juanuary 2017'
-__copyright__ = '(C) 2015-2017, Alessandro Pasotti'
+__date__ = 'May 2018'
+__copyright__ = '(C) 2015-2018, Alessandro Pasotti'
 
+# Add ext-libs directory
+import site
+EXT_LIBS_PATH = os.path.join(os.path.dirname(__file__), 'ext-libs')
+site.addsitedir(EXT_LIBS_PATH)
 
 # Import the PyQt and QGIS libraries
 try:
@@ -44,6 +48,14 @@ except:
 from qgis.core import *
 from .propertize import propertize
 
+try:
+    import pip
+    HAS_PIP = True
+except:
+    HAS_PIP = False
+
+import subprocess
+
 PLUGIN_DOMAIN="IPyConsole"
 
 # Defaults for settings
@@ -52,6 +64,39 @@ DEFAULT_FONT_SIZE=10
 DEFAULT_PROPERTIZE=1
 DEFAULT_AUTO_OPEN=0
 DEFAULT_SHOW_HELP=1
+
+class DepsDialog(QDialog):
+    """Dialog for pip install"""
+    def __init__(self, message):
+        super().__init__()
+        uic.loadUi(os.path.join(os.path.dirname(__file__), 'Ui_DepsDialog.ui'), self)
+        self.setWindowTitle(_tr("Install required dependencies"))
+        self.message.setText(message)
+        self.buttonBox.accepted.connect(self.install)
+        self.buttonBox.rejected.connect(self.reject)
+        self.installation_attempted = False
+
+    def install(self):
+        if not self.installation_attempted:
+            self.installation_attempted = True
+            try:
+                self.message.setText(self.message.text() + '<br><b>Logs</b><pre>')
+                if not os.path.exists(EXT_LIBS_PATH):
+                    os.mkdir(EXT_LIBS_PATH)
+                    site.addsitedir(EXT_LIBS_PATH)
+                with open(os.path.join(os.path.dirname(__file__), 'requirements.txt')) as req_file:
+                    for package in req_file.readlines():
+                        if package and package[0] != '#':
+                            command = ["pip", "install", package, '-t', EXT_LIBS_PATH, '--ignore-installed', '-q']
+                            self.message.setText(self.message.text() + ' '.join(command) + '\n')
+                            QApplication.processEvents()
+                            subprocess.call(command)
+                self.message.setText(self.message.text() + '</pre>')
+                self.message.setText(self.message.text() + '<br><b>Installation completed: restart QGIS</b>')
+            except Exception as e:
+                QMessageBox.critical(self, _tr("Error installing dependencies"), _tr("</pre><br>An error occourred while installing dependencies:<br>%s") % e)
+        else:
+            self.accept()
 
 
 class SettingsDialog(QDialog):
@@ -353,7 +398,13 @@ class IPyConsole:
                     # Can't set attribute .... on mac/win
                     pass
                 if int(self.get_settings('show_help', DEFAULT_SHOW_HELP)):
-                    banner = getattr(usage, 'default_banner', usage.default_gui_banner)
+                    try:
+                        banner = usage.default_banner
+                    except:
+                        try:
+                            banner = usage.default_gui_banner
+                        except:
+                            banner = ''
                     self.control._append_html('<small>%s</small>' % banner.replace('\n', '<br>').strip())
                     if int(self.get_settings('propertize', DEFAULT_PROPERTIZE)):
                         propertize_text = ("""All returning-something and no-args <code>core</code> and <code>gui</code> <code>Qgs*</code> class members have a <code>p_*</code> equivalent property to ease class introspection with <strong>TAB</strong> completion.""")
@@ -379,7 +430,15 @@ class IPyConsole:
             QTimer.singleShot(0, shout)
 
         except ImportError as e:
-            QMessageBox.information(self.iface.mainWindow(), _tr(u'Error'), _tr(u'You need to install <b>IPython 3.1.0</b> or <b>Jupyter 1.0.0</b> (and then restart QGIS) before running this <b>IPyConsole</b> plugin.<br>IPython can be installed with <code>pip install "ipython[all]==3.1.0 qtconsole"</code> or (better) <code>pip install jupyter==1.0.0 qtconsole</code>. More informations about IPython installation on <a href="https://ipython.org/install.html">https://ipython.org/install.html</a>. Windows users might need to run the commands as admin in the OSGEO Command Shell.<br>The exception message is: %s') % e)
+            error_message = _tr(u'You need to install <b>Jupyter 1.0.0</b> (and then restart QGIS) before running this <b>IPyConsole</b> plugin.<br>IPython can be installed with <code>pip install <code>pip install jupyter==1.0.0 qtconsole</code>. More informations about IPython installation on <a href="https://ipython.org/install.html">https://ipython.org/install.html</a>. Windows users might need to run the commands as admin in the OSGEO Command Shell.<br>The exception message is: %s') % e
+            if HAS_PIP:
+                install_message = _tr(u'<br>Press "Ok" if you would you like to try an automatic installation of the required packages (it may take some time depending on your network connection speed, total size is ~100 MB), press "Cancel" to install manually.'
+                )
+                dlg = DepsDialog(error_message + install_message)
+                dlg.exec_()
+            else:
+                QMessageBox.information(self.iface.mainWindow(), _tr(u'Error'), error_message)
+
 
 
 if __name__ == "__main__":
