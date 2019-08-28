@@ -295,7 +295,10 @@ class IPyConsole:
             else:
                 from qtconsole.rich_ipython_widget import RichIPythonWidget
 
-            from IPython.qt.inprocess import QtInProcessKernelManager
+            import io, sys
+            sys.stdout = sys.stderr = io.StringIO()
+            from qtconsole.inprocess import QtInProcessKernelManager
+
             from qgis import core, gui
 
            # Create an in-process kernel
@@ -402,7 +405,7 @@ class IPyConsole:
                         banner = usage.default_banner
                     except:
                         try:
-                            banner = usage.default_gui_banner
+                            banner = ' '.join(usage.default_banner_parts)
                         except:
                             banner = ''
                     self.control._append_html('<small>%s</small>' % banner.replace('\n', '<br>').strip())
@@ -419,7 +422,7 @@ class IPyConsole:
                 """As the name suggests... dynamic column number: stock
                 qtconsole doesn't resize its column number on window
                 resize but sticks to 80"""
-                from IPython.qt.console.completion_plain import text
+                from qtconsole.completion_plain import text
                 old_columnize = text.columnize
                 def new_columnize(items, separator='  ', displaywidth=80):
                     displaywidth = control.get_columns()
