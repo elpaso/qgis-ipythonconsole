@@ -423,7 +423,6 @@ class IPyConsole:
 
         monkey_patch_columnize(self.control)
         QTimer.singleShot(0, shout)
->>>>>>> 987b1c6... Adding dark mode and black and white theme functionality.
 
 
 if __name__ == "__main__":

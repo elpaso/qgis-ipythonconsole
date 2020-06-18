@@ -23,16 +23,7 @@ compile: $(UI_FILES) $(RESOURCE_FILES)
 	pyuic5 -o $@ $<
 
 
-builddeps:
-	@if [ ! -d "./ext-libs" ]; then \
-		mkdir ./ext-libs; \
-		pip install --target=./ext-libs -r requirements.txt; \
-	fi
-
-build: builddeps
-
-
-deploy: build
+deploy: 
 	ln -s `pwd` $(HOME)/$(QGISDIR)/python/plugins/ipyconsole
 
 clean:
