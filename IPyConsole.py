@@ -6,7 +6,7 @@
     ---------------------
     Begin                : April 2015
     Date                 : June 2020
-    Copyright            : (C) 2015-2018 by Alessandro Pasotti (ItOpen)
+    Copyright            : (C) 2015-2020 by Alessandro Pasotti (ItOpen)
     Email                : apasotti at gmail dot com
     Email                : brookforestscitech at gmail dot com
 ***************************************************************************
@@ -28,19 +28,13 @@ __copyright__ = '(C) 2015-2020, Alessandro Pasotti'
 
 
 # Import the PyQt and QGIS libraries
-try:
-    from qgis.core import Qgis
-    from PyQt5.QtCore import *
-    from PyQt5.QtGui import *
-    from PyQt5.QtWidgets import *
-    from PyQt5 import uic
-    QT_VERSION=5
-    os.environ['QT_API'] = 'pyqt5'
-except:
-    from PyQt4.QtCore import *
-    from PyQt4.QtGui import *
-    from PyQt4 import uic
-    QT_VERSION=4
+from qgis.core import Qgis
+from qgis.PyQt.QtCore import *
+from qgis.PyQt.QtGui import *
+from qgis.PyQt.QtWidgets import *
+from qgis.PyQt import uic
+os.environ['QT_API'] = 'pyqt5'
+
 
 from qgis.core import *
 from .propertize import propertize
@@ -271,10 +265,7 @@ class IPyConsole:
                 # Close current
                 self.control.close()
         try:
-            if QT_VERSION == 4:
-                from IPython.qt.console.rich_ipython_widget import RichIPythonWidget
-            else:
-               from qtconsole.rich_jupyter_widget import RichJupyterWidget
+            from qtconsole.rich_jupyter_widget import RichJupyterWidget
         except ImportError as e:
             error_message = _tr(u'You need to install <b>Jupyter 1.0.0</b> (and then restart QGIS) before running this <b>IPyConsole</b> plugin.<br>IPython can be installed with <code>pip install <code>pip install jupyter==1.0.0 qtconsole</code>. More informations about IPython installation on <a href="https://ipython.org/install.html">https://ipython.org/install.html</a>. Windows users might need to run the commands as admin in the OSGEO Command Shell.<br>The exception message is: %s') % e
             QMessageBox.information(self.iface.mainWindow(), _tr(u'Error'), error_message)
@@ -289,7 +280,7 @@ class IPyConsole:
         kernel_manager = QtInProcessKernelManager()
         kernel_manager.start_kernel()
         kernel = kernel_manager.kernel
-        kernel.gui = 'qt%s' % (QT_VERSION if QT_VERSION != 5 else '')
+        kernel.gui = 'qt'
         kernel.shell.push({
             'iface': self.iface,
             'canvas': self.canvas,
@@ -304,8 +295,8 @@ class IPyConsole:
             kernel.shell.ex('propertize(core)')
             kernel.shell.ex('propertize(gui)')
         # Import in the current namespace
-        kernel.shell.ex('from PyQt%s.QtCore import *' % QT_VERSION)
-        kernel.shell.ex('from PyQt%s.QtGui import *' % QT_VERSION)
+        kernel.shell.ex('from qgis.PyQt.QtCore import *')
+        kernel.shell.ex('from qgis.PyQt.QtGui import *')
         kernel.shell.ex('from qgis.core import *')
         kernel.shell.ex('from qgis.gui import *')
 
