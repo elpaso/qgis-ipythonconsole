@@ -278,7 +278,7 @@ class IPyConsole:
         try:
             from qtconsole.rich_jupyter_widget import RichJupyterWidget
         except ImportError as e:
-            error_message = _tr('You need to install <b>Jupyter 1.0.0</b> (and then restart QGIS) before running this <b>IPyConsole</b> plugin.<br>IPython can be installed with <code>pip install <code>pip install jupyter==1.0.0 qtconsole</code>. More informations about IPython installation on <a href="https://ipython.org/install.html">https://ipython.org/install.html</a>. Windows users might need to run the commands as admin in the OSGEO Command Shell.<br>The exception message is: %s') % e
+            error_message = _tr('You need to install <b>Jupyter 1.0.0</b> (and then restart QGIS) before running this <b>IPyConsole</b> plugin.<br>IPython can be installed with <code>pip install jupyter==1.0.0</code>. More informations about IPython installation on <a href="https://ipython.org/install.html">https://ipython.org/install.html</a>. Windows users might need to run the commands as admin in the OSGEO Command Shell.<br>The exception message is: %s') % e
             QMessageBox.information(
                 self.iface.mainWindow(), _tr(u'Error'), error_message)
 
