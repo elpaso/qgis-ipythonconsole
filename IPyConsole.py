@@ -419,13 +419,17 @@ class IPyConsole:
             """As the name suggests... dynamic column number: stock
             qtconsole doesn't resize its column number on window
             resize but sticks to 80"""
-            from qtconsole.completion_plain import text
-            old_columnize = text.columnize
+            from qtconsole.util import columnize
 
-            def new_columnize(items, separator='  ', displaywidth=80):
+            old_columnize = columnize
+
+            def new_columnize(control):
+                items = [sug["text"] for sug in control.get_suggestions()]
                 displaywidth = control.get_columns()
+                separator = "  "
                 return old_columnize(items, separator, displaywidth)
-            text.columnize = new_columnize
+
+            columnize = new_columnize
 
         monkey_patch_columnize(self.control)
         QTimer.singleShot(0, shout)
